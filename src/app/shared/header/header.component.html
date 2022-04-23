@@ -1,0 +1,127 @@
+
+  <!-- Navbar Starts -->
+  <nav id="pageTop" class="navbar navbar-expand-md navbar-dark bg-dark">
+    <!-- Drawer Starts -->
+    <button class="btn btn-outline-light ms-2">
+      <i class="fas fa-sliders-h"></i>
+    </button>
+    <!-- Drawer Ends -->
+
+    <!-- Logo -->
+    <a class="navbar-brand pl-2 ms-4" href="#">
+      <img src="assets/img/amazon_logo_white.png" height="30" width="100" alt="amazon logo white">
+    </a>
+    <!-- Logo -->
+
+    <!-- Collapser Button -->
+    <button class="navbar-toggler" type="button" (click)="isMenuCollapsed = !isMenuCollapsed">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- Collapser Button -->
+
+    <!-- for grouping and hiding navbar contents by a parent breakpoint. -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent" [ngbCollapse]="isMenuCollapsed">
+      <!-- Search Bar Starts -->
+      <form class="form-inline px-lg-5" novalidate (ngSubmit)="search()">
+        <div class="input-group">
+          <!-- Categories Dropdown -->
+          <div class="input-group-prepend">
+            <div ngbDropdown>
+              <button
+                class="btn btn-secondary dropdown-toggle"
+                type="button"
+                id="btnCategoryDropdownMenu"
+                ngbDropdownToggle
+              > All
+              </button>
+
+              <div ngbDropdownMenu aria-labelledby="btnCategoryDropdownMenu">
+                <a ngbDropdownItem  target="_blank" href="http://www.google.com.mx">All</a>
+                <a ngbDropdownItem>Smartphone</a>
+                <a ngbDropdownItem>Kitchen Hardware</a>
+                <a ngbDropdownItem>Prime Deals</a>
+                <a ngbDropdownItem>Book</a>
+              </div>
+            </div>
+          </div>
+          <!-- ./Categories Dropdown -->
+
+          <!-- Search Product Bar -->
+            <input
+              type="text"
+              class="form-control"
+              size="50"
+              [(ngModel)]="searchTerm"
+              name="searchTerm"
+              (input)="searchSuggestions()"
+              [placeholder]="placeholder"
+            >
+          <!--./ Search Product Bar -->
+
+          <!-- Submit Search Button -->
+          <div class="input-group-append">
+            <button type="submit" class="btn btn-warning">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+          <!--./ Submit Search Button -->
+        </div>
+      </form>
+      <!-- Search Bar Ends -->
+
+      <!-- for a full-height and lightweight navigation (including support for dropdowns). -->
+      <ul class="navbar-nav">
+        <!-- Preffered Language Starts -->
+        <li ngbDropdown class="nav-item px-2">
+          <a
+            class="nav-link"
+            href="#"
+            id="prefLanguageDropdown"
+            role="button"
+            ngbDropdownToggle
+          > <i class="fas fa-2x fa-language"></i>
+          </a>
+
+          <div ngbDropdownMenu aria-labelledby="prefLanguageDropdown">
+            <form class="p-3">
+              <div class="dropdown-divider"></div>
+
+              <div ngbDropdownItem class="custom-control custom-radio mb-2">
+
+                <input  class="custom-control-input me-1" type="radio" name="prefLang" id="englishLang" value="english"
+                  checked>
+
+                <label class="custom-control-label" for="englishLang">
+                  <img src="assets/img/flag/english.svg" alt="uk flag" width="50" height="30">
+                </label>
+              </div>
+            </form>
+          </div>
+        </li>
+        <!-- Preffered Language Ends -->
+
+        <!-- User Account Starts -->
+        <li ngbDropdown class="nav-item px-2">
+          <a class="nav-link"  id="userAccount" role="button" ngbDropdownToggle>
+            <i class="fas fa-2x fa-user-circle"></i>
+          </a>
+          <div ngbDropdownMenu class="px-3" aria-labelledby="userAccount">
+            <div class="d-flex flex-column justify-content-center">
+              <a href="#" class="btn btn-warning w-75 btn-sm font-weight-bold">Signin</a>
+              <small>New customer?<a href="register.html"> Start here.</a></small>
+            </div>
+          </div>
+        </li>
+        <!-- User Account Ends -->
+
+        <!-- Shopping Cart Starts -->
+        <li class="nav-item px-2">
+          <a class="nav-link" href="#" aria-disabled=" true"><i class="fas fa-2x text-light fa-shopping-cart"></i><span class="badge badge-warning badge-pill">0</span></a>
+        </li>
+        <!-- Shopping Cart Starts -->
+      </ul>
+      <!-- for a full-height and lightweight navigation (including support for dropdowns). -->
+    </div>
+    <!-- for grouping and hiding navbar contents by a parent breakpoint. -->
+  </nav>
+  <!-- Navbar Ends -->
