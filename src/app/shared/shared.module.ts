@@ -1,25 +1,32 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
-import { HeaderComponent } from './header/header.component';
+import { CommonModule } from '@angular/common';
+
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FooterComponent } from './footer/footer.component';
+
+import { FooterComponent } from './components/footer/footer.component';
+import { HeaderComponent } from './components/header/header.component';
+import { NotFoundPageComponent } from './not-found-page/not-found-page.component';
 
 
 
 @NgModule({
   declarations: [
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    NotFoundPageComponent
   ],
   exports:[
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    NotFoundPageComponent
   ],
   imports: [
     CommonModule,
     FormsModule,
-    NgbModule
+    NgbModule,
+    HttpClientModule
   ]
 })
 export class SharedModule { }

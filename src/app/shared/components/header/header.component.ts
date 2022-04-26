@@ -20,6 +20,12 @@ export class HeaderComponent implements OnInit {
   @Output() onEnter:EventEmitter<string> = new EventEmitter();
   debouncer: Subject<string> = new Subject();
 
+  private _searchHistory:string[] = [];
+
+  get searchHistory():string[] {
+    return [...this._searchHistory];
+  }
+
   constructor() { }
 
   ngOnInit(): void {
@@ -35,21 +41,29 @@ export class HeaderComponent implements OnInit {
   search(){
       console.log("search()",this.searchTerm);
       console.log("Emiti el evento onEnter()");
-      this.onEnter.emit(this.searchTerm);
+
+      // Remove white spaces from start and end and transform to lower case
+      let standarSearch = this.searchTerm.trim().toLowerCase();
+
+      // When there is not content
+      if(standarSearch.length === 0){
+          return;
+      }
+
+      // Check if the value is not present yet
+      if(!this._searchHistory.includes(standarSearch)){
+        this._searchHistory.unshift(standarSearch);
+        this._searchHistory = this._searchHistory.splice(0,10);
+        localStorage.setItem("searchHistory",JSON.stringify(this._searchHistory));
+      }
+
+      this.searchTerm = '';
+      //this.onEnter.emit(this.searchTerm);
   }
 
   searchSuggestions(){
     console.log("searchSuggestions",this.searchTerm);
     this.debouncer.next(this.searchTerm);
   }
-
-  // productSearch(search:string){
-
-  // }
-
-  // suggestions(event:string){
-  //   console.log("Recibiendo la data del debouncer: "+event);
-  // }
-
 
 }

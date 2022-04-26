@@ -10,9 +10,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
   declarations: [
     HomeComponent
   ],
-  exports:[
-    HomeComponent
-  ],
   imports: [
     CommonModule,
     HomeRoutingModule,
