@@ -13,6 +13,10 @@ const routes: Routes = [
         component: ProductListComponent
       },
       {
+        path: 'list/:searchTerm',
+        component: ProductListComponent
+      },
+      {
         path: ':id',
         component: ProductDetailComponent
       },

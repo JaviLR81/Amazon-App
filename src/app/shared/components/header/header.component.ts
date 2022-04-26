@@ -1,4 +1,5 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { debounceTime, Subject } from 'rxjs';
 
 @Component({
@@ -26,7 +27,7 @@ export class HeaderComponent implements OnInit {
     return [...this._searchHistory];
   }
 
-  constructor() { }
+  constructor(private router:Router) { }
 
   ngOnInit(): void {
     this.debouncer
@@ -57,12 +58,15 @@ export class HeaderComponent implements OnInit {
         localStorage.setItem("searchHistory",JSON.stringify(this._searchHistory));
       }
 
-      this.searchTerm = '';
+
+      this.router.navigate(['/product/list',this.searchTerm]);
       //this.onEnter.emit(this.searchTerm);
+
+      this.searchTerm = '';
   }
 
   searchSuggestions(){
-    console.log("searchSuggestions",this.searchTerm);
+    // console.log("searchSuggestions",this.searchTerm);
     this.debouncer.next(this.searchTerm);
   }
 

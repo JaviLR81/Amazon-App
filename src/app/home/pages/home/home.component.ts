@@ -10,7 +10,24 @@ import { HomeService } from 'src/app/shared/services/home/home.service';
 export class HomeComponent implements OnInit {
 
 
-  products:Product[] = [];
+  // products:Product[] = [];
+  products:Product[] = [
+    {
+      id:1,
+      name:'Microsoft Keyboard',
+      price:2.0,
+      image: 'Some Image',
+      description: 'The new Microsoft Keyboard',
+      createdAt: new Date(),
+      brand: {
+        id: 1,
+        name: 'Microsoft',
+        createdAt: new Date()
+      }
+    }
+  ];
+
+
 
   constructor(private homeService:HomeService) { }
 
@@ -18,7 +35,7 @@ export class HomeComponent implements OnInit {
     this.homeService.getProducts()
       .subscribe({
           next: products => {
-            this.products = products;
+            // this.products = products;
             console.log("~ this.products", this.products);
           },
           error: () => {
