@@ -1,0 +1,68 @@
+
+<div class="abrir-modal animacion fadeIn">
+  <div class="modal" tabindex="-1" style="display: block;" *ngIf="shouldShowModal()">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"> Editando producto: {{ product.name }} </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+
+          <div class="container">
+            <div class="row">
+              <div class="col-sm">
+
+                <ul *ngIf="product" class="list-group mb-3">
+                    <li class="list-group-item">
+                      {{ product.name }}
+                    </li>
+                    <li class="list-group-item">
+                      {{ product.price }}
+                    </li>
+                    <li class="list-group-item">
+                      {{ product.description }}
+                    </li>
+                    <li class="list-group-item">
+                      {{ product.createdAt | date:'fullDate' }}
+                    </li>
+                </ul>
+
+                <div class="input-group mb-3">
+                  <input
+                    (change)="seleccionarFoto($event)"
+                    type="file"
+                    class="form-control"
+                    id="inputGroupFile04"
+                    aria-describedby="inputGroupFileAddon04"
+                    aria-label="Upload"
+                  >
+                  <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    id="inputGroupFileAddon04"
+                    (click)="subirFoto()"
+                    [disabled]="!fotoSeleccionada"
+                    >
+                    Subir Foto
+                  </button>
+                </div>
+
+              </div>
+              <div class="col-sm">
+                    <img *ngIf="product?.image" src="http://localhost:8080/api/uploads/img/{{product.image}}" alt="{{product.image}}" class="img-thumbnail rounded">
+              </div>
+            </div>
+          </div>
+
+
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="closeModal()">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
