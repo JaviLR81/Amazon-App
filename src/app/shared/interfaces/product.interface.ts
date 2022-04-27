@@ -5,7 +5,7 @@ export interface Product {
   price:       number;
   image:       string;
   createdAt:   Date;
-  brand:       Brand;
+  brand?:       Brand;
 }
 
 export interface Brand {

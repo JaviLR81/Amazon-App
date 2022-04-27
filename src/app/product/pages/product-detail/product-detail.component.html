@@ -1,3 +1,171 @@
+<!-- This modal only works for edit data but not image-->
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title"> Editando producto <span *ngIf="product">: {{ product.name }}</span> </h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+
+    <form (ngSubmit)="update()" [formGroup]="updateForm">
+
+      <div class="mb-3">
+        <label for=""> Name </label>
+        <div class="form-group">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Product name"
+            formControlName="name"
+          >
+
+          <span class="form-text text-danger"
+            *ngIf="isAValidField('name')">
+              El campo no es válido
+          </span>
+
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for=""> Price </label>
+        <div class="form-group">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Product Description"
+            formControlName="price"
+          >
+          <span class="form-text text-danger"
+            *ngIf="isAValidField('price')">
+              El campo no es válido
+          </span>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for=""> Description </label>
+        <div class="form-group">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Product description"
+            formControlName="description"
+          >
+          <span class="form-text text-danger"
+            *ngIf="isAValidField('description')">
+              El campo no es válido
+          </span>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for=""> Created At </label>
+        <div class="form-group">
+          <input
+            type="date"
+            class="form-control"
+            placeholder="Product creation"
+            formControlName="createdAt"
+          >
+          <span class="form-text text-danger"
+            *ngIf="isAValidField('createdAt')">
+              El campo no es válido
+          </span>
+        </div>
+      </div>
+
+      <!-- Form Array -->
+
+      <!-- <div class="mb-3">
+        <label for=""> Add new tag </label>
+        <div class="input-group">
+          <input
+            class="form-control"
+            [formControl]="newTag"
+            placeholder="Agregar favorito"
+            (keyup.enter)="addTag()"
+          >
+
+          <button
+            class="btn btn-outline-primary"
+            type="button"
+            (click)="addTag()"
+          >
+            Agregar
+          </button>
+        </div>
+      </div> -->
+
+      <!-- Tags list -->
+
+      <!-- <div class="mb-3">
+        <label for=""> Tags </label>
+        <div formArrayName="tags">
+          <div class="input-group"
+            *ngFor="let tag of tagsArray.controls; let i = index">
+
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Product creation"
+              [formControlName]="i"
+            >
+
+            <button class="btn btn-outline-danger"
+              type="button"
+              (click)="deleteTag(i)">
+              Eliminar
+            </button>
+
+          </div>
+        </div>
+      </div> -->
+
+
+
+
+
+      <button type="submit" class="btn btn-primary mt-3">Update</button>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+  </div>
+
+  <!-- Printing the data state form -->
+
+  <!-- <div class="row">
+    <div class="col">
+
+        <span>Valid</span>
+        <pre>{{ updateForm.valid }}</pre>
+
+        <span>Pristine</span>
+        <pre>{{ updateForm.pristine }}</pre>
+
+        <span>Touched</span>
+        <pre>{{ updateForm.touched }}</pre>
+
+        <span>Value</span>
+        <pre>{{ updateForm.value | json }}</pre>
+
+        <span>New Tag</span>
+        <pre>{{ newTag.valid}}</pre>
+        <pre>{{ newTag.value}}</pre>
+
+        <span>Precio</span>
+        <pre>{{ updateForm.controls['price'].errors | json }}</pre>
+    </div>
+</div> -->
+
+
+</ng-template>
+
+<hr>
+
+<pre>{{ closeResult }}</pre>
+
+
+
+<!-- This modal only works for edit image -->
 <app-modal-product-edit *ngIf="product" [product]="product"></app-modal-product-edit>
 
 <div class="container my-5">
@@ -35,6 +203,10 @@
 
       <button class="btn btn-success m-1" type="button" (click)="openModal()">
         Edit Image
+      </button>
+
+      <button class="btn btn-primary m-1" type="button" (click)="open(content)">
+        Edit Product
       </button>
 
       <p>

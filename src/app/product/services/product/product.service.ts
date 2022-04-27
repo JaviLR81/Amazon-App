@@ -47,4 +47,12 @@ export class ProductService {
       );
   }
 
+  updateProduct(id:number,product:Product):Observable<Product>{
+    return this.http.put<Product>(`${this._baseURL}/products/${id}`,product)
+      .pipe(
+        map((resp:any) => resp.product as Product)
+      )
+    ;
+  }
+
 }
