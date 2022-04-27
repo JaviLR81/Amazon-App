@@ -1,0 +1,42 @@
+
+
+
+<!-- Single product detail starts -->
+<div class="row border-top py-3">
+  <!-- Product image starts -->
+  <div class="col-md-4 text-center">
+
+    <!-- <img src="img/product_images/product_list_image_01.svg" alt="product image 01"> -->
+
+    <img
+      *ngIf="product?.image"
+      src="http://localhost:8080/api/uploads/img/{{ product.image }}"
+      alt="{{ product.name }}"
+      class="img-fluid"
+    >
+    <img
+      *ngIf="!product?.image"
+      src="http://localhost:8080/images/no-image.png"
+      alt="{{ product.name }}"
+      class="img-fluid"
+    >
+
+  </div> <!-- Product image ends -->
+
+  <!-- Product details starts -->
+  <div class="col-md-8">
+    <a [routerLink]="['/product',product.id]">{{ product.name }}</a>
+    <p class="text-muted my-0">Sold by : {{ product.brand?.name }}</p>
+    <p>
+      <i class="fas fa-star" style="color: #ffa41c;"></i>
+      <i class="far fa-star" style="color: #ffa41c;"></i>
+      <i class="far fa-star" style="color: #ffa41c;"></i>
+      <i class="far fa-star" style="color: #ffa41c;"></i>
+      <i class="far fa-star" style="color: #ffa41c;"></i>
+    </p>
+    <p class="text-uppercase my-0 font-weight-bold text-danger">
+      <i class="fas fa-rupee-sign" style="font-size: 10px;"></i> {{ product.price | currency }}
+    </p>
+  </div> <!-- Product details ends -->
+
+</div> <!-- Single product detail ends -->

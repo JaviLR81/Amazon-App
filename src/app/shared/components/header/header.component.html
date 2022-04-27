@@ -8,8 +8,8 @@
     <!-- Drawer Ends -->
 
     <!-- Logo -->
-    <a class="navbar-brand pl-2 ms-4" href="#">
-      <img src="assets/img/amazon_logo_white.png" height="30" width="100" alt="amazon logo white">
+    <a class="navbar-brand pl-2 ms-4"  routerLink="/">
+      <img src="assets/img/amazon_logo_white.png"  height="30" width="100" alt="amazon logo white">
     </a>
     <!-- Logo -->
 
@@ -36,7 +36,7 @@
               </button>
 
               <div ngbDropdownMenu aria-labelledby="btnCategoryDropdownMenu">
-                <a ngbDropdownItem  target="_blank" href="http://www.google.com.mx">All</a>
+                <a ngbDropdownItem routerLink="/product/list">Products</a>
                 <a ngbDropdownItem>Smartphone</a>
                 <a ngbDropdownItem>Kitchen Hardware</a>
                 <a ngbDropdownItem>Prime Deals</a>

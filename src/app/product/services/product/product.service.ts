@@ -38,10 +38,7 @@ export class ProductService {
 
     return this.http.post(`${this._baseURL}/products/upload`,formData)
       .pipe(
-        tap( (resp:any) => {
-            console.log("Imprimiendo el estatus en el operador tap ",resp.status);
-            console.log("Imprimiendo toda la response en el operador tap ",resp);
-          }
+        tap( (resp:any) => {}
         ),
         map( (resp:any) => resp.product as Product)
       );
@@ -51,6 +48,17 @@ export class ProductService {
     return this.http.put<Product>(`${this._baseURL}/products/${id}`,product)
       .pipe(
         map((resp:any) => resp.product as Product)
+      );
+  }
+
+  getProducts():Observable<Product[]>{
+    return this.http.get<Product[]>(`${this._baseURL}/products`);
+  }
+
+  saveProduct(product:Product): Observable<Product>{
+    return this.http.post<Product>(`${this._baseURL}/products`,product)
+      .pipe(
+        map( (resp:any) => resp.product as Product )
       )
     ;
   }
