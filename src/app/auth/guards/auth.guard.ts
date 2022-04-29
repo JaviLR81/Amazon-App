@@ -36,6 +36,7 @@ export class AuthGuard implements CanActivate {
       return false;
   }
 
+
   isTokenExpired(){
     let token = this.authService.token;
     let payload = this.authService.getDataFromToken(token);

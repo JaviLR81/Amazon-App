@@ -6,6 +6,9 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from './shared/shared.module';
 
 import { AppComponent } from './app.component';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { TokenInterceptor } from './product/interceptors/token.interceptor';
+import { AuthInterceptor } from './product/interceptors/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -17,7 +20,10 @@ import { AppComponent } from './app.component';
     AppRoutingModule,
     SharedModule
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

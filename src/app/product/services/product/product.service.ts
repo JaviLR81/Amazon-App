@@ -27,7 +27,10 @@ export class ProductService {
   private httpHeaders = new HttpHeaders()
     .set("Content-Type","application/json");
 
-  // TODO: Check for generalization of this method
+  /**
+   * Se uso pero fue Substituido por un interceptor que es algo más general AuthInterceptor
+   */
+
   isNotAuthorized(e:any):boolean{
 
     // Unahutorized
@@ -53,6 +56,10 @@ export class ProductService {
     return false;
   }
 
+  /**
+   * Se uso pero se substituyo por el interceptor TokenInterceptor
+   * @returns
+   */
   private agregarAuthorizationHeader(){
     let token = this.authService.token;
 
@@ -67,7 +74,7 @@ export class ProductService {
   }
 
   getProductDetail(id:number): Observable<Product>{
-    return this.http.get<Product>(`${this._baseURL}/products/${id}`,{headers : this.agregarAuthorizationHeader()})
+    return this.http.get<Product>(`${this._baseURL}/products/${id}`)
       .pipe(
 
         // TODO: Este map es solo para adaptar la funcionalidad debe de ser emovido
@@ -78,10 +85,11 @@ export class ProductService {
 
         catchError( (e) => {
 
+          // Se uso mejor un interceptor
           // Maybe we need a redirection to login or / depending http code status
-          if(this.isNotAuthorized(e)){
-            return throwError(() => e);
-          }
+          // if(this.isNotAuthorized(e)){
+          //   return throwError(() => e);
+          // }
 
           this.router.navigateByUrl('/');
           Swal.fire('Oops',"El producto buscado no existe","info");
@@ -114,7 +122,7 @@ export class ProductService {
         catchError(e => {
 
             // Maybe we need a redirection to login or / depending http code status
-            this.isNotAuthorized(e);
+            // this.isNotAuthorized(e);
             return throwError(() => e);
 
         })
@@ -122,7 +130,7 @@ export class ProductService {
   }
 
   updateProduct(id:number,product:Product):Observable<Product>{
-    return this.http.put<Product>(`${this._baseURL}/products/${id}`,product,{headers : this.agregarAuthorizationHeader()})
+    return this.http.put<Product>(`${this._baseURL}/products/${id}`,product)
       .pipe(
         map((resp:any) => resp.product as Product)
       );
