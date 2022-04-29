@@ -93,7 +93,7 @@
     <!-- Prouct Row Starts -->
     <div class="row">
       <!-- Left hand filter starts -->
-      <div class="col-md-3">
+      <div class="col-md-3" *ngIf="hasRole('ROLE_ADMIN') || hasRole('ROLE_USER') ">
         <p class="text-capitalize font-weight-bold">avg. customer review</p>
         <button class="btn btn-sm bg-transparent">
           <i class="fas fa-star" style="color: #ffa41c;"></i>

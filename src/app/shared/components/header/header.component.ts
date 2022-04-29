@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { debounceTime, Subject } from 'rxjs';
+import { AuthService } from 'src/app/auth/services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -27,7 +28,10 @@ export class HeaderComponent implements OnInit {
     return [...this._searchHistory];
   }
 
-  constructor(private router:Router) { }
+  constructor(
+    private router:Router,
+    private authService:AuthService
+  ) { }
 
   ngOnInit(): void {
     this.debouncer
@@ -68,6 +72,14 @@ export class HeaderComponent implements OnInit {
   searchSuggestions(){
     // console.log("searchSuggestions",this.searchTerm);
     this.debouncer.next(this.searchTerm);
+  }
+
+  isAuthenticated():boolean{
+    return this.authService.isAuthenticated();
+  }
+
+  logout():void{
+    this.authService.logout();
   }
 
 }

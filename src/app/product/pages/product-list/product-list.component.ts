@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { of, switchMap } from 'rxjs';
+import { AuthService } from 'src/app/auth/services/auth.service';
 import { Product } from 'src/app/shared/interfaces/product.interface';
 import Swal from 'sweetalert2';
 import { ProductService } from '../../services/product/product.service';
@@ -28,7 +29,8 @@ export class ProductListComponent implements OnInit {
     private activatedRoute:ActivatedRoute,
     private productService:ProductService,
     private fb:FormBuilder,
-    private ngBModal:NgbModal
+    private ngBModal:NgbModal,
+    private authService:AuthService
   ) { }
 
   ngOnInit(): void {
@@ -94,6 +96,10 @@ export class ProductListComponent implements OnInit {
       price: '',
       image: 'no-image.png',
     })
+  }
+
+  hasRole(role:string):boolean{
+    return this.authService.hasRole(role);
   }
 
 }
