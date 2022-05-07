@@ -25,14 +25,13 @@ export class AuthInterceptor implements HttpInterceptor {
       catchError( e => {
 
           // Unahutorized
-          // Verificar si estamos o no estamos autenticados
-          // TODO this constraint could leave a user when 401 is received  well in normal case its not a problem
-          // TODO but in my case when i altered the map is an error to return a forbidden
-          if(this.authService.isAuthenticated()){
-            this.authService.logout();
-          }
-
           if(e.status == 401){
+
+            // Verificar si estamos o no estamos autenticados
+            if(this.authService.isAuthenticated()){
+              this.authService.logout();
+            }
+
             this.router.navigateByUrl('/login');
           }
 
