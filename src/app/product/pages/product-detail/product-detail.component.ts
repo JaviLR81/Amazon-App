@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { switchMap } from 'rxjs';
 import { Product } from 'src/app/shared/interfaces/product.interface';
+import { NameUniqueValidatorService } from 'src/app/shared/services/validators/name-unique-validator.service';
+import { ValidatorService } from 'src/app/shared/services/validators/validator.service';
 import Swal from 'sweetalert2';
 import { ModalProductEditService } from '../../services/modal-product-edit/modal-product-edit.service';
 import { ProductService } from '../../services/product/product.service';
@@ -35,8 +37,8 @@ export class ProductDetailComponent implements OnInit {
   // })
 
   updateForm: FormGroup = this.fb.group({
-    name: ['',[Validators.required, Validators.minLength(3)]],
-    price: ['',[Validators.required,Validators.min(0)]],
+    name: ['',[Validators.required, Validators.minLength(3)],[this.nameUniqueValidatorService]],
+    price: ['',[Validators.required, this.validatorService.shouldBeANumber, this.validatorService.shouldBeMajorThanZero]],
     description: ['',[Validators.required]],
     createdAt: [null,[Validators.required]],
 
@@ -46,6 +48,8 @@ export class ProductDetailComponent implements OnInit {
       // ['Electronics',Validators.required],
       // ],Validators.required)
     ])
+  },{
+    validators: [ this.validatorService.descriptionShouldContainName('name','description') ]
   });
 
   // A control that dont belongs to the updateForm
@@ -56,6 +60,8 @@ export class ProductDetailComponent implements OnInit {
   constructor(
     private activatedRoute:ActivatedRoute,
     private productService:ProductService,
+    private validatorService:ValidatorService,
+    private nameUniqueValidatorService:NameUniqueValidatorService,
     private modalProductEditService:ModalProductEditService,
     private ngbModal: NgbModal,
     private fb:FormBuilder
@@ -204,6 +210,25 @@ export class ProductDetailComponent implements OnInit {
 
   get tagsArray(){
     return this.updateForm.get('tags') as FormArray;
+  }
+
+
+  getErrorMsj(field:string){
+    const fieldErrors = this.updateForm.get(field)?.errors;
+
+    if(fieldErrors?.['required']){
+      return 'El campo es obligatorio';
+    }else if(fieldErrors?.['isANumber']){
+      return 'El campo debe ser númerico';
+    }else if(fieldErrors?.['isNotZero']){
+      return 'El campo debe ser mayor a cero';
+    }else if(fieldErrors?.['containsName']){
+      return 'La descripción debe contener el nombre del producto';
+    }else if(fieldErrors?.['nameIsUnique']){
+      return 'El nombre debe ser único';
+    }
+
+    return '';
   }
 
 

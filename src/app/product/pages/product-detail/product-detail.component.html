@@ -20,7 +20,7 @@
 
           <span class="form-text text-danger"
             *ngIf="isAValidField('name')">
-              El campo no es válido
+              {{ getErrorMsj('name') }}
           </span>
 
         </div>
@@ -36,7 +36,7 @@
           >
           <span class="form-text text-danger"
             *ngIf="isAValidField('price')">
-              El campo no es válido
+            {{ getErrorMsj('price') }}
           </span>
         </div>
       </div>
@@ -51,7 +51,7 @@
           >
           <span class="form-text text-danger"
             *ngIf="isAValidField('description')">
-              El campo no es válido
+            {{ getErrorMsj('description') }}
           </span>
         </div>
       </div>
