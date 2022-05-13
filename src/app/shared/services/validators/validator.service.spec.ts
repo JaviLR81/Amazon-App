@@ -7,7 +7,7 @@ describe('ValidatorsService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(ValidatorsService);
+    service = TestBed.inject(ValidatorService);
   });
 
   it('should be created', () => {
