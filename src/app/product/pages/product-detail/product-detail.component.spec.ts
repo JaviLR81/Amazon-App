@@ -3,10 +3,11 @@ import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { AbstractControlOptions, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { of, Subject } from 'rxjs';
-import { Product } from 'src/app/shared/interfaces/product.interface';
+import { of, Subject, throwError } from 'rxjs';
+import { Product, Tag } from 'src/app/shared/interfaces/product.interface';
 import { NameUniqueValidatorService } from 'src/app/shared/services/validators/name-unique-validator.service';
 import { ValidatorService } from 'src/app/shared/services/validators/validator.service';
+import { product, products, tag, tags } from 'src/app/testing/product-mock';
 import { ModalProductEditService } from '../../services/modal-product-edit/modal-product-edit.service';
 import { ProductService } from '../../services/product/product.service';
 
@@ -33,7 +34,11 @@ class FakeActivatedRoute {
 describe('ProductDetailComponent', () => {
 
   // Mocks
-  let product: Product;
+  let mockTag:Tag;
+  let mockTags:Tag[];
+  let mockProduct:Product;
+  let mockProducts:Product[];
+
 
   let component: ProductDetailComponent;
   let fixture: ComponentFixture<ProductDetailComponent>;
@@ -48,7 +53,7 @@ describe('ProductDetailComponent', () => {
   let formGroupSpy: jasmine.SpyObj<FormGroup>;
 
   beforeEach(async () => {
-    productServiceSpy             = jasmine.createSpyObj<ProductService>('ProductService',['getProductDetail','updateProduct']);
+    productServiceSpy             = jasmine.createSpyObj<ProductService>('ProductService',['getProductDetail','updateProduct','getTags']);
     validatorServiceSpy           = jasmine.createSpyObj<ValidatorService>('ValidatorService',['shouldBeANumber','shouldBeMajorThanZero','descriptionShouldContainName']);
     nameUniqueValidatorServiceSpy = jasmine.createSpyObj<NameUniqueValidatorService>('NameUniqueValidatorService',['validate']);
     modalProductEditServiceSpy    = jasmine.createSpyObj<ModalProductEditService>('ModalProductEditService',['openModal']);
@@ -84,19 +89,10 @@ describe('ProductDetailComponent', () => {
     (<FakeActivatedRoute>(<any>activatedRoute)).push({id: '25'});
 
     // Mocks
-    product = {
-      id: 1,
-      name: 'Samsung',
-      image: 'some-image.png',
-      description: 'some_description',
-      price: 123.5,
-      createdAt: new Date(),
-      brand: {
-        id: 1,
-        name: 'Samsung',
-        createdAt: new Date()
-      }
-    };
+    mockProduct = product;
+    mockProducts = products;
+    mockTag = tag;
+    mockTags = tags;
 
   });
 
@@ -186,5 +182,25 @@ describe('ProductDetailComponent', () => {
     expect(msg).toBe("El campo debe ser mayor a cero");
   });
 
+
+  it('getTags() method', () => {
+
+    productServiceSpy.getTags.and.returnValue(of(mockTags));
+
+    component.getTags();
+
+    expect(productServiceSpy.getTags).toHaveBeenCalled();
+    expect(component.tags.length).toBeGreaterThan(0);
+  });
+
+  it('getTags() method error', () => {
+
+    productServiceSpy.getTags.and.returnValue(throwError(() => 'Error al cargar las tags'));
+
+    component.getTags();
+
+    expect(productServiceSpy.getTags).toHaveBeenCalled();
+    expect(component.tags.length).toBe(0);
+  });
 
 });

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, map, Observable, tap, throwError } from 'rxjs';
-import { Product } from 'src/app/shared/interfaces/product.interface';
+import { Product, Tag } from 'src/app/shared/interfaces/product.interface';
 import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 
@@ -63,4 +63,8 @@ export class ProductService {
     ;
   }
 
+  /** Tags */
+  getTags():Observable<Tag[]>{
+    return this.http.get<Tag[]>(`${this._baseURL}/products/tags`);
+  }
 }

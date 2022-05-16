@@ -74,15 +74,13 @@
 
       <!-- Form Array -->
 
-      <!-- <div class="mb-3">
+      <div class="mb-3">
         <label for=""> Add new tag </label>
         <div class="input-group">
-          <input
-            class="form-control"
-            [formControl]="newTag"
-            placeholder="Agregar favorito"
-            (keyup.enter)="addTag()"
-          >
+
+          <ng-select class="form-control" [formControl]="newTag">
+              <ng-option *ngFor="let tag of tags" [value]="tag">{{tag.name}}</ng-option>
+          </ng-select>
 
           <button
             class="btn btn-outline-primary"
@@ -92,21 +90,25 @@
             Agregar
           </button>
         </div>
-      </div> -->
+        <span class="form-text text-danger" *ngIf="newTag.errors !== null && newTag.touched">
+          Ingrese un elemento válido
+        </span>
+      </div>
 
       <!-- Tags list -->
 
-      <!-- <div class="mb-3">
+      <div class="mb-3" *ngIf="tagsArray.controls.length > 0">
         <label for=""> Tags </label>
         <div formArrayName="tags">
           <div class="input-group"
-            *ngFor="let tag of tagsArray.controls; let i = index">
+            *ngFor="let tag of tagsArray.controls; let i = index" [formGroupName]="i">
 
             <input
               type="text"
               class="form-control"
-              placeholder="Product creation"
-              [formControlName]="i"
+              placeholder="Tag creation"
+              formControlName="name"
+              readonly
             >
 
             <button class="btn btn-outline-danger"
@@ -117,52 +119,20 @@
 
           </div>
         </div>
-      </div> -->
+      </div>
 
 
 
-
-
-      <button type="submit" class="btn btn-primary mt-3">Update</button>
+      <button type="submit" class="btn btn-primary mt-3">Actualizar</button>
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Close</button>
   </div>
-
-  <!-- Printing the data state form -->
-
-  <!-- <div class="row">
-    <div class="col">
-
-        <span>Valid</span>
-        <pre>{{ updateForm.valid }}</pre>
-
-        <span>Pristine</span>
-        <pre>{{ updateForm.pristine }}</pre>
-
-        <span>Touched</span>
-        <pre>{{ updateForm.touched }}</pre>
-
-        <span>Value</span>
-        <pre>{{ updateForm.value | json }}</pre>
-
-        <span>New Tag</span>
-        <pre>{{ newTag.valid}}</pre>
-        <pre>{{ newTag.value}}</pre>
-
-        <span>Precio</span>
-        <pre>{{ updateForm.controls['price'].errors | json }}</pre>
-    </div>
-</div> -->
-
 
 </ng-template>
 
 <hr>
-
-<pre>{{ closeResult }}</pre>
-
 
 
 <!-- This modal only works for edit image -->

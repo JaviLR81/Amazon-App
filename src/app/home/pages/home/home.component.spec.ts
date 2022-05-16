@@ -2,16 +2,23 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { from, of, throwError } from 'rxjs';
-import { Product } from 'src/app/shared/interfaces/product.interface';
+import { Product, Tag } from 'src/app/shared/interfaces/product.interface';
 import { HomeService } from 'src/app/shared/services/home/home.service';
+import { product, products, tag, tags } from 'src/app/testing/product-mock';
 
 import { HomeComponent } from './home.component';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
-
   let homeServiceSpy: jasmine.SpyObj<HomeService>;
+
+  // Mocks
+  let mockTag:Tag;
+  let mockTags:Tag[];
+  let mockProduct:Product;
+  let mockProducts:Product[];
+
 
   beforeEach(async () => {
 
@@ -35,6 +42,15 @@ describe('HomeComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
+
+
+    // Mocks
+    mockProduct = product;
+    mockProducts = products;
+    mockTag = tag;
+    mockTags = tags;
+
+
   });
 
   it('should create', () => {
@@ -44,23 +60,7 @@ describe('HomeComponent', () => {
 
   it('should call getProducts in HomeServie', () => {
 
-    let product: Product = {
-      id: 1,
-      name: 'Samsung',
-      image: 'some-image.png',
-      description: 'some_description',
-      price: 123.5,
-      createdAt: new Date(),
-      brand: {
-        id: 1,
-        name: 'Samsung',
-        createdAt: new Date()
-      }
-    }
-
-    let products:Product[] = [product,product];
-
-    homeServiceSpy.getProducts.and.returnValue(of(products));
+    homeServiceSpy.getProducts.and.returnValue(of(mockProducts));
 
     component.ngOnInit();
 

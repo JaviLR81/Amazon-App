@@ -2,26 +2,18 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { HomeService } from './home.service';
-import { Product } from '../../interfaces/product.interface';
+import { Product, Tag } from '../../interfaces/product.interface';
 import { environment } from 'src/environments/environment';
+import { product, products, tag, tags } from 'src/app/testing/product-mock';
 
 describe('HomeService', () => {
 
 
- // Mocks
- let products:Product[] = [{
-    id: 1,
-    name: 'Samsung',
-    image: 'some-image.png',
-    description: 'some_description',
-    price: 123.5,
-    createdAt: new Date(),
-    brand: {
-      id: 1,
-      name: 'Samsung',
-      createdAt: new Date()
-    }
-  }];
+  // Mocks
+  let mockTag:Tag;
+  let mockTags:Tag[];
+  let mockProduct:Product;
+  let mockProducts:Product[];
 
 
   let service: HomeService;
@@ -39,6 +31,12 @@ describe('HomeService', () => {
 
     service = TestBed.inject(HomeService);
     httpController = TestBed.inject(HttpTestingController);
+
+    // Mocks
+    mockProduct = product;
+    mockProducts = products;
+    mockTag = tag;
+    mockTags = tags;
   });
 
   afterEach(() => {
@@ -54,7 +52,7 @@ describe('HomeService', () => {
   it('should call getProducts()', () => {
 
 		  service.getProducts().subscribe((res) => {
-	      expect(res).toEqual(products);
+	      expect(res).toEqual(mockProducts);
 	    });
 
 	    const req = httpController.expectOne({
@@ -62,7 +60,7 @@ describe('HomeService', () => {
 	      url: `${_baseURL}/products`,
 	    });
 
-	    req.flush(products);
+	    req.flush(mockProducts);
   });
 
 
@@ -77,7 +75,7 @@ describe('HomeService', () => {
 
       expect(req.request.headers.has('Authorization')).withContext('Contais authorization header').toBeFalsy();
 
-	    req.flush(products);
+	    req.flush(mockProducts);
   });
 
 

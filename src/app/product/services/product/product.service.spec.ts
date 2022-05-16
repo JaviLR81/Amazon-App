@@ -6,8 +6,9 @@ import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { ProductService } from './product.service';
 
-import { Product } from 'src/app/shared/interfaces/product.interface';
+import { Product, Tag } from 'src/app/shared/interfaces/product.interface';
 import Swal from 'sweetalert2';
+
 
 
 describe('ProductService', () => {
@@ -16,7 +17,21 @@ describe('ProductService', () => {
   let routerSpy: jasmine.SpyObj<Router>;
   let _baseURL = environment.baseURL;
 
+
   // Mocks
+
+  // Tags
+
+  let mockTag:Tag = {
+    id: 1,
+    name: 'Cocina',
+    createdAt: new Date()
+  };
+
+  let mockTags:Tag[] = [mockTag];
+
+
+  // Product
   let mockNestedProduct = {
     product: {
       id: 1,
@@ -29,11 +44,12 @@ describe('ProductService', () => {
         id: 1,
         name: 'Samsung',
         createdAt: new Date()
-      }
+      },
+      tags: mockTags
     }
   };
 
-  let mockProduct = {
+  let mockProduct: Product = {
     id: 1,
     name: 'Samsung',
     image: 'some-image.png',
@@ -44,10 +60,12 @@ describe('ProductService', () => {
       id: 1,
       name: 'Samsung',
       createdAt: new Date()
-    }
+    },
+    tags: mockTags
   };
 
   let mockProducts:Product[] = [mockProduct];
+
 
   beforeEach(() => {
 
@@ -197,6 +215,22 @@ describe('ProductService', () => {
 
     req.flush(mockNestedProduct);
   });
+
+  it('getTags() method', () => {
+
+    service.getTags().subscribe(tags => {
+      expect(tags).toEqual(mockTags);
+    })
+
+    let req = controller.expectOne({
+      url: `${_baseURL}/products/tags`,
+      method: 'GET',
+    });
+
+    req.flush(mockTags);
+  });
+
+
 
 
 

@@ -2,19 +2,29 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of } from 'rxjs';
-import { Product } from 'src/app/shared/interfaces/product.interface';
+import { Product, Tag } from 'src/app/shared/interfaces/product.interface';
+import { product, products, tag, tags } from 'src/app/testing/product-mock';
 import Swal from 'sweetalert2';
 import { ModalProductEditService } from '../../services/modal-product-edit/modal-product-edit.service';
 import { ProductService } from '../../services/product/product.service';
 
 import { ModalProductEditComponent } from './modal-product-edit.component';
 
-xdescribe('ModalProductEditComponent', () => {
+describe('ModalProductEditComponent', () => {
   let component: ModalProductEditComponent;
   let fixture: ComponentFixture<ModalProductEditComponent>;
 
   let modalProductEditServiceSpy: jasmine.SpyObj<ModalProductEditService>;
   let productServiceSpy: jasmine.SpyObj<ProductService>;
+
+  // Mocks
+
+  // Mocks
+  let mockTag:Tag;
+  let mockTags:Tag[];
+  let mockProduct:Product;
+  let mockProducts:Product[];
+
 
   beforeEach(async () => {
 
@@ -45,6 +55,13 @@ xdescribe('ModalProductEditComponent', () => {
     modalProductEditServiceSpy.closeModal.and.returnValue();
 
     fixture.detectChanges();
+
+    // Mocks
+    mockProduct = product;
+    mockProducts = products;
+    mockTag = tag;
+    mockTags = tags;
+
   });
 
   it('should create', () => {
@@ -82,28 +99,15 @@ xdescribe('ModalProductEditComponent', () => {
   });
 
   // TODO: Check event emitter test
-  it('subirFoto() should call service for upload image', () => {
+  xit('subirFoto() should call service for upload image', () => {
 
-    let product: Product = {
-      id: 1,
-      name: 'Samsung',
-      image: 'some-image.png',
-      description: 'some_description',
-      price: 123.5,
-      createdAt: new Date(),
-      brand: {
-        id: 1,
-        name: 'Samsung',
-        createdAt: new Date()
-      }
-    }
 
     productServiceSpy.uploadProductImage.and.returnValue(
-      of(product)
+      of(mockProduct)
     )
 
     component.fotoSeleccionada = 'Some-Image';
-    component.product = product;
+    component.product = mockProduct;
 
     component.subirFoto();
 

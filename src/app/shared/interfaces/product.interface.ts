@@ -5,11 +5,18 @@ export interface Product {
   price:       number;
   image:       string;
   createdAt:   Date;
-  brand?:       Brand;
+  brand?:      Brand;
+  tags:        Tag[];
 }
 
 export interface Brand {
   id:        number;
   name:      string;
+  createdAt: Date;
+}
+
+export interface Tag {
+  id: number;
+  name: string;
   createdAt: Date;
 }

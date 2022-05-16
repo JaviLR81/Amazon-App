@@ -58,6 +58,14 @@ export class ValidatorService {
         const nameField:string = formGroup.get(name)?.value;
         const descriptionField:string = formGroup.get(description)?.value;
 
+        // Solution to reset form
+        if(!nameField || !descriptionField){
+          console.log('Alguno de los dos fue nulo');
+          return {
+            containsName:true
+          }
+        }
+
         if(!descriptionField.includes(nameField)) {
           formGroup.get(description)?.setErrors({ containsName:true });
           return {

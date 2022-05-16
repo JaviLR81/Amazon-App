@@ -10,6 +10,7 @@ import { ProductListComponent } from './pages/product-list/product-list.componen
 import { ModalProductEditComponent } from './components/modal-product-edit/modal-product-edit.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CardProductComponent } from './components/card-product/card-product.component';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 
 
@@ -27,7 +28,8 @@ import { CardProductComponent } from './components/card-product/card-product.com
     ProductRoutingModule,
     NgbModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgSelectModule
   ]
 })
 export class ProductModule { }

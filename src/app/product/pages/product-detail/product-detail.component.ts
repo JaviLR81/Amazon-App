@@ -3,7 +3,8 @@ import { FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, Valid
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { switchMap } from 'rxjs';
-import { Product } from 'src/app/shared/interfaces/product.interface';
+import { Product, Tag } from 'src/app/shared/interfaces/product.interface';
+
 import { NameUniqueValidatorService } from 'src/app/shared/services/validators/name-unique-validator.service';
 import { ValidatorService } from 'src/app/shared/services/validators/validator.service';
 import Swal from 'sweetalert2';
@@ -17,10 +18,11 @@ import { ProductService } from '../../services/product/product.service';
 })
 export class ProductDetailComponent implements OnInit {
 
-  product!:Product;
-  closeResult = '';
+  product   !:Product;
+  closeResult       = '';
+  tags       :Tag[] = [];
 
-  // Declaring reactive form
+  /** MODALS */
 
   /**
    * fb:FormBuilder : Se utiliza para crear objetos complejos
@@ -28,29 +30,20 @@ export class ProductDetailComponent implements OnInit {
    * constructor
    *
    */
-
-  // updateForm: FormGroup = new FormGroup({
-  //   name        : new FormControl('RTX 4080ti'),
-  //   price       : new FormControl('Jeje'),
-  //   description : new FormControl('Jeje2'),
-  //   createdAt   : new FormControl('Jeje2'),
-  // })
-
   updateForm: FormGroup = this.fb.group({
     name: ['',[Validators.required, Validators.minLength(3)],[this.nameUniqueValidatorService]],
     price: ['',[Validators.required, this.validatorService.shouldBeANumber, this.validatorService.shouldBeMajorThanZero]],
     description: ['',[Validators.required]],
     createdAt: [null,[Validators.required]],
-
     // Form array
-    tags: this.fb.array([
-      // ['Tvs',Validators.required],
-      // ['Electronics',Validators.required],
-      // ],Validators.required)
-    ])
-  },{
+    tags: this.fb.array([])
+    },{
     validators: [ this.validatorService.descriptionShouldContainName('name','description') ]
   });
+
+  get tagsArray(){
+    return this.updateForm.get('tags') as FormArray;
+  }
 
   // A control that dont belongs to the updateForm
   // In the html form ew should call to this control with [FormControl]
@@ -90,15 +83,20 @@ export class ProductDetailComponent implements OnInit {
     this.modalProductEditService.notifyUpload
       .subscribe(product => {
           this.product.image = product.image;
-      })
+    })
+
+    // Tags
+    this.getTags();
   }
+
+
+  /** MODALS */
 
   openModal(){
     this.modalProductEditService.openModal();
   }
 
   // Modal for edit data no image
-
   open(content:any) {
 
     this.populateUpdateForm();
@@ -110,7 +108,6 @@ export class ProductDetailComponent implements OnInit {
     });
   }
 
-
   private getDismissReason(reason: any): string {
     if (reason === ModalDismissReasons.ESC) {
       return 'by pressing ESC';
@@ -121,14 +118,22 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
+
+  /** Send and validate FORMS */
+
   update(){
+
+    // console.log('update-form',this.updateForm.value);
 
     let product:any = {
       name: this.updateForm.get('name')?.value,
       price: this.updateForm.get('price')?.value,
       description: this.updateForm.get('description')?.value,
       createdAt: this.updateForm.get('createdAt')?.value,
+      tags: this.tagsArray.value
     };
+
+    // console.log('Product to send',product);
 
     if(this.updateForm.invalid){
       this.updateForm.markAllAsTouched();
@@ -151,8 +156,8 @@ export class ProductDetailComponent implements OnInit {
 
     // Creating the product to send
     this.updateForm.reset();
-
-
+    this.newTag.reset();
+    this.tagsArray.clear();
   }
 
   populateUpdateForm(){
@@ -162,56 +167,24 @@ export class ProductDetailComponent implements OnInit {
       name: this.product.name,
       price: this.product.price,
       description: this.product.description,
-      createdAt: this.product.createdAt
+      createdAt: this.product.createdAt,
     })
 
-    // Otra opción para llenar el formulario
-    // this.updateForm.setValue({
-    //   name: product.name,
-    //   price: product.price,
-    //   description: product.description,
-    //   createdAt: product.createdAt
-    // });
+    this.newTag.reset();
 
+    let tags = this.product.tags;
+    this.tagsArray.clear();
+
+    // Adding dynamic tags array
+    for (let index = 0; index < tags.length; index++) {
+      this.tagsArray.push(this.createTag(tags[index].id,tags[index].name));
+    }
   }
 
   isAValidField(field:string){
       return this.updateForm.controls[field].errors
               && this.updateForm.controls[field].touched;
   }
-
-  // Form Array fields
-  addTag(){
-
-    if(this.newTag.invalid){
-      return;
-    }
-
-    // (this.updateForm.controls['favoritos'] as FormArray).push();
-
-    // 1° Option
-    // this.tagsArray.push(
-    //   new FormControl( this.newTag.value,Validators.required )
-    // );
-
-    // 2° Option
-    this.tagsArray.push(
-      this.fb.control(this.newTag.value,Validators.required)
-    );
-
-    this.newTag.reset();
-  }
-
-  deleteTag(index:number){
-    if(this.tagsArray.length > 2){
-      this.tagsArray.removeAt(index);
-    }
-  }
-
-  get tagsArray(){
-    return this.updateForm.get('tags') as FormArray;
-  }
-
 
   getErrorMsj(field:string){
     const fieldErrors = this.updateForm.get(field)?.errors;
@@ -229,6 +202,57 @@ export class ProductDetailComponent implements OnInit {
     }
 
     return '';
+  }
+
+
+  /** TAGS */
+
+  getTags(){
+    this.productService.getTags()
+      .subscribe({
+        next: resp => {
+          this.tags = resp;
+        },
+        error : e => {
+          console.log("~ e", e);
+        }
+      })
+  }
+
+  // Create and format the object for add in the form array
+  createTag(id:number,name:string){
+    return this.fb.group(
+      {
+        id: [id,[Validators.required,Validators.pattern("[0-9]*")]],
+        name: [name,Validators.required]
+      }
+    )
+  }
+
+  // Adds a tag to the form array
+  addTag(){
+    // Check invalid independent form control
+    if(this.newTag.invalid){
+      this.newTag.markAsTouched();
+      return;
+    }
+
+    let exists = this.tagsArray.value.filter((object:any) => object.id === this.newTag.value['id']);
+
+    if(exists.length > 0){
+      Swal.fire('Oops','El elemento ya existe en el arreglo','info');
+      return;
+    }
+
+    this.tagsArray.push(
+      this.createTag(this.newTag.value['id'],this.newTag.value['name'])
+    );
+
+    this.newTag.reset();
+  }
+
+  deleteTag(index:number){
+    this.tagsArray.removeAt(index);
   }
 
 
