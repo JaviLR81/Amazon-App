@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Product } from 'src/app/shared/interfaces/product.interface';
 import { HomeService } from 'src/app/shared/services/home/home.service';
+import { products } from 'src/app/testing/product-mock';
 
 @Component({
   selector: 'app-home',
@@ -10,26 +11,11 @@ import { HomeService } from 'src/app/shared/services/home/home.service';
 export class HomeComponent implements OnInit {
 
 
-  products:Product[] = [];
+  // products:Product[] = [];
 
   // Data for testing without server
 
-  // products:Product[] = [
-  //   {
-  //     id:1,
-  //     name:'Microsoft Keyboard',
-  //     price:2.0,
-  //     image: 'Some Image',
-  //     description: 'The new Microsoft Keyboard',
-  //     createdAt: new Date(),
-  //     brand: {
-  //       id: 1,
-  //       name: 'Microsoft',
-  //       createdAt: new Date()
-  //     }
-  //   }
-  // ];
-
+  products:Product[] = products;
 
 
   constructor(private homeService:HomeService) { }
@@ -38,7 +24,7 @@ export class HomeComponent implements OnInit {
     this.homeService.getProducts()
       .subscribe({
           next: products => {
-            this.products = products;
+            // this.products = products;
           },
           error: () => {
             console.log("An error ocurred while trying to load the products");
