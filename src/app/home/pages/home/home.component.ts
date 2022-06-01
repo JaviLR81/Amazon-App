@@ -15,7 +15,7 @@ export class HomeComponent implements OnInit {
 
   // Data for testing without server
 
-  products:Product[] = products;
+  products:Product[] = [];
 
 
   constructor(private homeService:HomeService) { }
@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit {
     this.homeService.getProducts()
       .subscribe({
           next: products => {
-            // this.products = products;
+            this.products = products;
           },
           error: () => {
             console.log("An error ocurred while trying to load the products");

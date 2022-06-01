@@ -11,6 +11,7 @@ import { ModalProductEditComponent } from './components/modal-product-edit/modal
 import { ReactiveFormsModule } from '@angular/forms';
 import { CardProductComponent } from './components/card-product/card-product.component';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { ErrorMessageDirective } from './directives/error-message.directive';
 
 
 
@@ -21,7 +22,8 @@ import { NgSelectModule } from '@ng-select/ng-select';
     ProductDetailComponent,
     // Components
     ModalProductEditComponent,
-    CardProductComponent
+    CardProductComponent,
+    ErrorMessageDirective
   ],
   imports: [
     CommonModule,

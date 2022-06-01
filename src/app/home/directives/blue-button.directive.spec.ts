@@ -11,13 +11,11 @@ import { BlueButtonDirective } from './blue-button.directive';
 })
 class TestComponent { }
 
-fdescribe('BlueButtonDirective', () => {
+describe('BlueButtonDirective', () => {
 
   let fixture:ComponentFixture<TestComponent>;
 
   let des:DebugElement[];
-  let bareH2:DebugElement;
-
 
   beforeEach(() => {
     fixture = TestBed.configureTestingModule({
