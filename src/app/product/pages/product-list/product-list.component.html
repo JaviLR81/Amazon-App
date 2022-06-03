@@ -21,9 +21,11 @@
             formControlName="name"
           >
 
-          <span class="form-text text-danger"
-            *ngIf="isAValidField('name')">
-              El campo no es válido
+          <span
+            class="form-text text-danger"
+            [errorMessage]="!isAValidField('name')"
+            message ="Este es un mensaje personalizado"
+          >
           </span>
 
         </div>

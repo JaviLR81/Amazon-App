@@ -35,3 +35,8 @@ hr.hr-text::before {
 .rating:hover {
   color: #ffa41c;
 }
+
+
+.hidden {
+  display:none;
+}

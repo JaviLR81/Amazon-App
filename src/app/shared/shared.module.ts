@@ -9,6 +9,8 @@ import { FooterComponent } from './components/footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { NotFoundPageComponent } from './not-found-page/not-found-page.component';
 import { RouterModule } from '@angular/router';
+import { EnlargeImageDirective } from './directives/enlarge-image.directive';
+import { EnlargeImageHoverDirective } from './directives/enlarge-image-hover.directive';
 
 
 
@@ -16,12 +18,16 @@ import { RouterModule } from '@angular/router';
   declarations: [
     HeaderComponent,
     FooterComponent,
-    NotFoundPageComponent
+    NotFoundPageComponent,
+    EnlargeImageDirective,
+    EnlargeImageHoverDirective
   ],
   exports:[
     HeaderComponent,
     FooterComponent,
-    NotFoundPageComponent
+    NotFoundPageComponent,
+    EnlargeImageDirective,
+    EnlargeImageHoverDirective
   ],
   imports: [
     CommonModule,

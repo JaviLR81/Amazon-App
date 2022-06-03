@@ -59,9 +59,12 @@ export class ProductListComponent implements OnInit {
   }
 
   isAValidField(field:string){
+
+    let hasErrors = this.productForm.controls[field].errors == null ? false :true;
+
     return  this.productForm.controls[field].touched
             &&
-            this.productForm.controls[field].errors;
+            hasErrors;
   }
 
   saveProduct(){
