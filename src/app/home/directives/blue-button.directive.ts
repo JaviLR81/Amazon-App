@@ -22,13 +22,9 @@ export class BlueButtonDirective {
 
   private highlight(color: string | null) {
 
-    console.log('location',this.location);
-
     if(color == null){
-      console.log('Me ejecute al inicio 1');
       this.el.nativeElement.style.textTransform = 'lowercase';
     }else{
-      console.log('Me ejecute al inicio 2');
       this.el.nativeElement.style.textTransform = color;
     }
 

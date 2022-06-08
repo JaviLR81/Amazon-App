@@ -11,8 +11,7 @@ import { NotFoundPageComponent } from './not-found-page/not-found-page.component
 import { RouterModule } from '@angular/router';
 import { EnlargeImageDirective } from './directives/enlarge-image.directive';
 import { EnlargeImageHoverDirective } from './directives/enlarge-image-hover.directive';
-
-
+import { AvailabilityPipe } from './pipes/availability.pipe';
 
 @NgModule({
   declarations: [
@@ -20,14 +19,16 @@ import { EnlargeImageHoverDirective } from './directives/enlarge-image-hover.dir
     FooterComponent,
     NotFoundPageComponent,
     EnlargeImageDirective,
-    EnlargeImageHoverDirective
+    EnlargeImageHoverDirective,
+    AvailabilityPipe,
   ],
   exports:[
     HeaderComponent,
     FooterComponent,
     NotFoundPageComponent,
     EnlargeImageDirective,
-    EnlargeImageHoverDirective
+    EnlargeImageHoverDirective,
+    AvailabilityPipe
   ],
   imports: [
     CommonModule,

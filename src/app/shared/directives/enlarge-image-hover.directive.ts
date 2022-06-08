@@ -29,7 +29,6 @@ export class EnlargeImageHoverDirective {
 
   @HostListener('mouseover') onMouseOver() {
     this.increaseSize();
-    console.log("Estoy sobre la imagen");
   }
 
   @HostListener('mouseleave') onMouseLeave() {
