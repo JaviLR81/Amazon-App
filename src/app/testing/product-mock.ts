@@ -1,4 +1,5 @@
 import { Product, Tag } from "../shared/interfaces/product.interface";
+import { inventoryLineMock } from "./inventory-mock";
 
 
 export let tag:Tag = {
@@ -21,7 +22,8 @@ export let product:Product = {
     name: 'Samsung',
     createdAt: new Date()
   },
-  tags: tags
+  tags: tags,
+  inventory: inventoryLineMock
 };
 
 export let products:Product[] = [product];

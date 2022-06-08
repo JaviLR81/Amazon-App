@@ -1,3 +1,5 @@
+import { Inventory } from "./inventory.interface";
+
 export interface Product {
   id:          number;
   name:        string;
@@ -7,6 +9,7 @@ export interface Product {
   createdAt:   Date;
   brand?:      Brand;
   tags:        Tag[];
+  inventory:   Inventory;
 }
 
 export interface Brand {

@@ -48,7 +48,7 @@
                     <i class="fas fa-rupee-sign"></i> {{ product.price | currency }}
                   </p>
                   <p>
-                    {{ product.name }}
+                    {{ product.name }} - {{ product.inventory | availability }}
                   </p>
                 </div>
                 <div class="col-md-6">
