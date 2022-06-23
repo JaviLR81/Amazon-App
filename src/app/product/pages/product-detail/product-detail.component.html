@@ -19,7 +19,7 @@
           >
 
           <span class="form-text text-danger"
-            *ngIf="isAValidField('name')">
+            *ngIf="hasValidationErrors('name')">
               {{ getErrorMsj('name') }}
           </span>
 
@@ -35,7 +35,7 @@
             formControlName="price"
           >
           <span class="form-text text-danger"
-            *ngIf="isAValidField('price')">
+            *ngIf="hasValidationErrors('price')">
             {{ getErrorMsj('price') }}
           </span>
         </div>
@@ -50,7 +50,7 @@
             formControlName="description"
           >
           <span class="form-text text-danger"
-            *ngIf="isAValidField('description')">
+            *ngIf="hasValidationErrors('description')">
             {{ getErrorMsj('description') }}
           </span>
         </div>
@@ -66,9 +66,30 @@
             formControlName="createdAt"
           >
           <span class="form-text text-danger"
-            *ngIf="isAValidField('createdAt')">
+            *ngIf="hasValidationErrors('createdAt')">
               El campo no es válido
           </span>
+        </div>
+      </div>
+
+
+      <div class="mb-3" formGroupName="brand">
+        <label for=""> Brand </label>
+
+        <div class="form-group">
+          <ng-select [items]="brands"
+            bindLabel="name"
+            bindValue="id"
+            placeholder="Seleccionar Marca"
+            formControlName="id"
+          >
+          </ng-select>
+
+          <span class="form-text text-danger"
+            *ngIf="hasValidationErrors('brand.id')">
+              La marca es requerida
+          </span>
+
         </div>
       </div>
 
@@ -120,7 +141,6 @@
           </div>
         </div>
       </div>
-
 
 
       <button type="submit" class="btn btn-primary mt-3">Actualizar</button>

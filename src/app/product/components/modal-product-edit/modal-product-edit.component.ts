@@ -52,9 +52,6 @@ export class ModalProductEditComponent implements OnInit, OnDestroy {
         next: resp => {
           this.product = resp;
 
-          // At this point we can close the modal and emit the changes
-          this.modalProductEditService.notifyUpload.emit(this.product);
-
           Swal.fire("Ok","Image upload succesfully","success");
 
         },

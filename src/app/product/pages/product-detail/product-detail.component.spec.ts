@@ -53,7 +53,7 @@ describe('ProductDetailComponent', () => {
   let formGroupSpy: jasmine.SpyObj<FormGroup>;
 
   beforeEach(async () => {
-    productServiceSpy             = jasmine.createSpyObj<ProductService>('ProductService',['getProductDetail','updateProduct','getTags']);
+    productServiceSpy             = jasmine.createSpyObj<ProductService>('ProductService',['getProductDetail','updateProduct','getTags','getBrands']);
     validatorServiceSpy           = jasmine.createSpyObj<ValidatorService>('ValidatorService',['shouldBeANumber','shouldBeMajorThanZero','descriptionShouldContainName']);
     nameUniqueValidatorServiceSpy = jasmine.createSpyObj<NameUniqueValidatorService>('NameUniqueValidatorService',['validate']);
     modalProductEditServiceSpy    = jasmine.createSpyObj<ModalProductEditService>('ModalProductEditService',['openModal']);
@@ -94,27 +94,13 @@ describe('ProductDetailComponent', () => {
     mockTag = tag;
     mockTags = tags;
 
+    //
+    productServiceSpy.getTags.and.returnValue(of([]));
+    productServiceSpy.getBrands.and.returnValue(of([]));
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  // TODO: Revisar
-  xit('ngOnInit() test', (done:DoneFn) => {
-
-    productServiceSpy.getProductDetail.and.returnValue(of(product));
-
-    component.ngOnInit();
-
-    fixture.detectChanges();
-
-    fixture.whenStable().then(() => {
-
-      expect(component.product).toBe(product);
-
-      done();
-    });
   });
 
   it('openModal() method', () => {
@@ -127,45 +113,27 @@ describe('ProductDetailComponent', () => {
   it('populateUpdateForm() method', () => {
 
     component.product = product;
-
     const espia = spyOn(component.updateForm,'reset');
-
     component.populateUpdateForm();
-
     expect(espia).toHaveBeenCalled();
   });
 
-  // TODO: Revisar
-  xit('update() method', fakeAsync(() => {
-
-    component.product = product;
-    // debugger;
-
-    // component.updateForm.get('name')?.setValue('Apple TV');
-    component.updateForm.controls['name'].setValue('Apple TV');
-    component.updateForm.controls['price'].setValue(76.77);
-    component.updateForm.controls['description'].setValue('The new Apple TV is the most recent and incredible TV in the market');
-    component.updateForm.controls['createdAt'].setValue(new Date());
-
-    nameUniqueValidatorServiceSpy.validate.and.returnValue(of(null));
-    // const espia = spyOn(component.updateForm,'reset');
-    productServiceSpy.updateProduct.and.returnValue(of(product));
-    ngbModalSpy.dismissAll.and.returnValue();
-
-    component.update();
-
-    // expect(espia).toHaveBeenCalled();
-    expect(productServiceSpy.updateProduct).toHaveBeenCalled();
-  }));
-
   it('isAValidField() method', () => {
     let priceField = component.updateForm.controls['price'];
+
     priceField.setValue(125);
-    let valid = component.isAValidField('price');
-    expect(valid).toBeNull();
+    component.updateForm.markAllAsTouched();
+    fixture.detectChanges();
+    let hasErrors = component.hasValidationErrors('price');
+    expect(hasErrors).toBeFalsy();
+
+    priceField.setValue("abc");
+    component.updateForm.markAllAsTouched();
+    fixture.detectChanges();
+    hasErrors = component.hasValidationErrors('price');
+    expect(hasErrors).toBeTruthy();
   });
 
-  // TODO: Terminar otros campos
   it('getErrorMsj() method', () => {
     let priceField = component.updateForm.controls['price'];
 
@@ -182,23 +150,16 @@ describe('ProductDetailComponent', () => {
     expect(msg).toBe("El campo debe ser mayor a cero");
   });
 
-
   it('getTags() method', () => {
-
     productServiceSpy.getTags.and.returnValue(of(mockTags));
-
     component.getTags();
-
     expect(productServiceSpy.getTags).toHaveBeenCalled();
     expect(component.tags.length).toBeGreaterThan(0);
   });
 
   it('getTags() method error', () => {
-
     productServiceSpy.getTags.and.returnValue(throwError(() => 'Error al cargar las tags'));
-
     component.getTags();
-
     expect(productServiceSpy.getTags).toHaveBeenCalled();
     expect(component.tags.length).toBe(0);
   });

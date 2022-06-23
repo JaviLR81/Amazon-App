@@ -23,7 +23,7 @@
 
           <span
             class="form-text text-danger"
-            [errorMessage]="!isAValidField('name')"
+            [errorMessage]="!hasValidationErrors('name')"
             message ="Este es un mensaje personalizado"
           >
           </span>
@@ -34,14 +34,14 @@
         <label for=""> Price </label>
         <div class="form-group">
           <input
-            type="text"
+            type="number"
             class="form-control"
             placeholder="Product Description"
             formControlName="price"
           >
 
           <span class="form-text text-danger"
-            *ngIf="isAValidField('price')">
+            *ngIf="hasValidationErrors('price')">
               El campo no es válido
           </span>
 
@@ -58,18 +58,42 @@
           >
 
           <span class="form-text text-danger"
-            *ngIf="isAValidField('description')">
+            *ngIf="hasValidationErrors('description')">
               El campo no es válido
           </span>
 
         </div>
       </div>
-      <button type="submit" class="btn btn-primary mt-3">Update</button>
+
+      <div class="mb-3" formGroupName="brand">
+        <label for=""> Brand </label>
+
+        <div class="form-group">
+          <ng-select [items]="brands"
+            bindLabel="name"
+            bindValue="id"
+            placeholder="Seleccionar Marca"
+            formControlName="id"
+          >
+          </ng-select>
+
+          <span class="form-text text-danger"
+            *ngIf="hasValidationErrors('brand.id')">
+              La marca es requerida
+          </span>
+
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Save Product</button>
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Close Modal</button>
   </div>
+
+
+<br>
 
 </ng-template>
 

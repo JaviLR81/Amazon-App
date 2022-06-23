@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { switchMap } from 'rxjs';
-import { Product, Tag } from 'src/app/shared/interfaces/product.interface';
-
-import { NameUniqueValidatorService } from 'src/app/shared/services/validators/name-unique-validator.service';
-import { ValidatorService } from 'src/app/shared/services/validators/validator.service';
 import Swal from 'sweetalert2';
+
 import { ModalProductEditService } from '../../services/modal-product-edit/modal-product-edit.service';
+import { NameUniqueValidatorService } from 'src/app/shared/services/validators/name-unique-validator.service';
 import { ProductService } from '../../services/product/product.service';
+import { ValidatorService } from 'src/app/shared/services/validators/validator.service';
+import { Brand, Product, Tag } from 'src/app/shared/interfaces/product.interface';
 
 @Component({
   selector: 'app-product-detail',
@@ -18,9 +19,10 @@ import { ProductService } from '../../services/product/product.service';
 })
 export class ProductDetailComponent implements OnInit {
 
-  product   !:Product;
-  closeResult       = '';
-  tags       :Tag[] = [];
+  product   !: Product;
+  closeResult: string       = '';
+  tags       : Tag[] = [];
+  brands     : Brand[] = [];
 
   /** MODALS */
 
@@ -35,6 +37,9 @@ export class ProductDetailComponent implements OnInit {
     price: ['',[Validators.required, this.validatorService.shouldBeANumber, this.validatorService.shouldBeMajorThanZero]],
     description: ['',[Validators.required]],
     createdAt: [null,[Validators.required]],
+    brand: this.fb.group({
+      id: [null, Validators.required]
+    }),
     // Form array
     tags: this.fb.array([])
     },{
@@ -73,20 +78,15 @@ export class ProductDetailComponent implements OnInit {
           next: product => {
             this.product = product;
           },
-          error: error => {
+          error: () => {
             console.log("Ha ocurrido un error");
           }
         }
       );
 
-    // Subscribe for notification about new image upload
-    this.modalProductEditService.notifyUpload
-      .subscribe(product => {
-          this.product.image = product.image;
-    })
-
     // Tags
     this.getTags();
+    this.getBrands();
   }
 
 
@@ -123,25 +123,13 @@ export class ProductDetailComponent implements OnInit {
 
   update(){
 
-    // console.log('update-form',this.updateForm.value);
-
-    let product:any = {
-      name: this.updateForm.get('name')?.value,
-      price: this.updateForm.get('price')?.value,
-      description: this.updateForm.get('description')?.value,
-      createdAt: this.updateForm.get('createdAt')?.value,
-      tags: this.tagsArray.value
-    };
-
-    // console.log('Product to send',product);
-
     if(this.updateForm.invalid){
       this.updateForm.markAllAsTouched();
       return;
     }
 
     // Sending the object to the backend form
-    this.productService.updateProduct(this.product.id,product)
+    this.productService.updateProduct(this.product.id, this.updateForm.value)
       .subscribe({
         next: product => {
           this.product = product;
@@ -168,6 +156,9 @@ export class ProductDetailComponent implements OnInit {
       price: this.product.price,
       description: this.product.description,
       createdAt: this.product.createdAt,
+      brand: {
+        id: this.product.brand.id
+      }
     })
 
     this.newTag.reset();
@@ -181,9 +172,14 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
-  isAValidField(field:string){
-      return this.updateForm.controls[field].errors
-              && this.updateForm.controls[field].touched;
+  // TODO: Isolate this functions in a shared validation service
+
+  hasValidationErrors(field: string): boolean{
+
+    let hasErrors  = (this.updateForm.get(field)?.errors === null)  ? false :true;
+    let wasTouched = (this.updateForm.get(field)?.touched) ? true : false;
+
+    return hasErrors && wasTouched;
   }
 
   getErrorMsj(field:string){
@@ -253,6 +249,20 @@ export class ProductDetailComponent implements OnInit {
 
   deleteTag(index:number){
     this.tagsArray.removeAt(index);
+  }
+
+  /** BRANDS */
+
+  getBrands(){
+    this.productService.getBrands()
+      .subscribe({
+        next: brands => {
+          this.brands = brands;
+        },
+        error : e => {
+          console.log("~ e", e);
+        }
+      })
   }
 
 

@@ -1,14 +1,18 @@
 import { NO_ERRORS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { AbstractControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { of, Subject, throwError } from 'rxjs';
-import { Product } from 'src/app/shared/interfaces/product.interface';
-import Swal from 'sweetalert2';
-import { ProductService } from '../../services/product/product.service';
 
+import { from, of, Subject, throwError } from 'rxjs';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import Swal from 'sweetalert2';
+
+import { ProductService } from '../../services/product/product.service';
 import { ProductListComponent } from './product-list.component';
+
+import { Product } from 'src/app/shared/interfaces/product.interface';
+import { brandMock, brandsMock } from 'src/app/testing/product-mock';
+
 
 class FakeActivatedRoute {
 
@@ -34,7 +38,7 @@ describe('ProductListComponent', () => {
 
   beforeEach(async () => {
 
-    productServiceSpy = jasmine.createSpyObj<ProductService>('ProductService',['getProducts','saveProduct']);
+    productServiceSpy = jasmine.createSpyObj<ProductService>('ProductService',['getProducts','saveProduct','getBrands']);
     ngBModalSpy       = jasmine.createSpyObj<NgbModal>('NgbModal',['dismissAll']);
 
     await TestBed.configureTestingModule({
@@ -70,29 +74,33 @@ describe('ProductListComponent', () => {
   });
 
   it('ngOnInit() method', waitForAsync(() => {
+
+    productServiceSpy.getBrands.and.returnValue( from([brandsMock]) );
+
     component.ngOnInit();
 
     expect(component).toBeTruthy();
+    expect(productServiceSpy.getBrands).toHaveBeenCalled();
+    expect(component.brands.length).toBe(2);
   }));
 
 
-  // TODO: Check real implementation
-  xit('isAValidField() method', () => {
+  it('Check validation fields errors', () => {
+    let priceControl = setFormControlValue(component.productForm,'price',123);
+    let hasErrors = formControlHasErrors(priceControl!);
+    expect(hasErrors).toBeFalsy();
 
-    let priceControl = component.productForm.get('price');
+    priceControl?.setValue("");
+    hasErrors = formControlHasErrors(priceControl!);
+    expect(hasErrors).toBeTruthy();
 
-    priceControl?.setValue(123);
-    let result = component.isAValidField('price');
-    console.log('price',priceControl?.value);
-    console.log('price valid',priceControl?.errors);
-    expect(result).toBeFalsy();
+    priceControl = setFormControlValue(component.productForm,'brand.id',brandMock.id)
+    hasErrors = formControlHasErrors(priceControl!);
+    expect(hasErrors).toBeFalsy();
 
-
-    priceControl?.setValue(null);
-    result = component.isAValidField('price');
-    console.log('price',priceControl?.value);
-    console.log('price valid',priceControl?.errors);
-    expect(result).toBeNull();
+    priceControl = setFormControlValue(component.productForm,'brand.id',null)
+    hasErrors = formControlHasErrors(priceControl!);
+    expect(hasErrors).toBeTruthy();
   });
 
   it('saveProduct() with invalid form', () => {
@@ -112,9 +120,7 @@ describe('ProductListComponent', () => {
 
     let product:Product = {} as Product;
 
-    component.productForm.get('name')?.setValue('Apple TV');
-    component.productForm.get('description')?.setValue('Apple TV, the most recent TV in the market');
-    component.productForm.get('price')?.setValue(125);
+    setFormFieldValues(component.productForm);
 
     productServiceSpy.saveProduct.and.returnValue(of(product));
 
@@ -132,11 +138,9 @@ describe('ProductListComponent', () => {
 
   });
 
-  it('saveProduct() with valid form', () => {
+  it('Test error in saveProduct()', () => {
 
-    component.productForm.get('name')?.setValue('Apple TV');
-    component.productForm.get('description')?.setValue('Apple TV, the most recent TV in the market');
-    component.productForm.get('price')?.setValue(125);
+    setFormFieldValues(component.productForm);
 
     let spy = spyOn(console,'log');
     productServiceSpy.saveProduct.and.returnValue(throwError(() => ''));
@@ -145,5 +149,25 @@ describe('ProductListComponent', () => {
 
     expect(spy).toHaveBeenCalledWith('Ha ocurrido un error al tratar de guardar el producto');
   });
+
+
+  // TODO: Isolate this functions in a place that allows to share beetwen multiple tests
+
+  function formControlHasErrors(formControl: AbstractControl): boolean{
+    return (formControl.errors === null) ? false : true;
+  }
+
+  function setFormFieldValues(productForm: FormGroup): void {
+    productForm.get('name')?.setValue('Apple TV');
+    productForm.get('description')?.setValue('Apple TV, the most recent TV in the market');
+    productForm.get('price')?.setValue(125);
+    productForm.get('brand.id')?.setValue(brandMock.id);
+  }
+
+  function setFormControlValue(productForm: FormGroup, fieldName: string, value: any): AbstractControl | null{
+    let formControl = productForm.get(fieldName);
+    formControl?.setValue(value);
+    return formControl;
+  }
 
 });
