@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-// TODO: Fixing and check all navigation
 // Implementing lazy loading
 const routes: Routes = [
   {
