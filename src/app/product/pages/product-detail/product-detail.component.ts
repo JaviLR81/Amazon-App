@@ -3,7 +3,7 @@ import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@ang
 import { ActivatedRoute } from '@angular/router';
 
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { switchMap } from 'rxjs';
+import { catchError, forkJoin, Observable, of, switchMap } from 'rxjs';
 import Swal from 'sweetalert2';
 
 import { ModalProductEditService } from '../../services/modal-product-edit/modal-product-edit.service';
@@ -11,6 +11,7 @@ import { NameUniqueValidatorService } from 'src/app/shared/services/validators/n
 import { ProductService } from '../../services/product/product.service';
 import { ValidatorService } from 'src/app/shared/services/validators/validator.service';
 import { Brand, Product, Tag } from 'src/app/shared/interfaces/product.interface';
+import { FormValidatorService } from 'src/app/shared/services/form-validator.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -56,13 +57,14 @@ export class ProductDetailComponent implements OnInit {
   newTag: FormControl = this.fb.control('',Validators.required);
 
   constructor(
-    private activatedRoute:ActivatedRoute,
-    private productService:ProductService,
-    private validatorService:ValidatorService,
-    private nameUniqueValidatorService:NameUniqueValidatorService,
-    private modalProductEditService:ModalProductEditService,
-    private ngbModal: NgbModal,
-    private fb:FormBuilder
+    private activatedRoute             : ActivatedRoute,
+    private productService             : ProductService,
+    private nameUniqueValidatorService : NameUniqueValidatorService,
+    private modalProductEditService    : ModalProductEditService,
+    private validatorService           : ValidatorService,
+    private formValidatorService       : FormValidatorService,
+    private ngbModal                   : NgbModal,
+    private fb                         : FormBuilder
   ) { }
 
   ngOnInit(): void {
@@ -85,8 +87,7 @@ export class ProductDetailComponent implements OnInit {
       );
 
     // Tags
-    this.getTags();
-    this.getBrands();
+    this.getInitialData();
   }
 
 
@@ -172,14 +173,9 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
-  // TODO: Isolate this functions in a shared validation service
 
-  hasValidationErrors(field: string): boolean{
-
-    let hasErrors  = (this.updateForm.get(field)?.errors === null)  ? false :true;
-    let wasTouched = (this.updateForm.get(field)?.touched) ? true : false;
-
-    return hasErrors && wasTouched;
+  hasValidationErrors(formGroup: FormGroup, field: string): boolean{
+    return this.formValidatorService.hasValidationErrors(formGroup, field);
   }
 
   getErrorMsj(field:string){
@@ -203,16 +199,8 @@ export class ProductDetailComponent implements OnInit {
 
   /** TAGS */
 
-  getTags(){
-    this.productService.getTags()
-      .subscribe({
-        next: resp => {
-          this.tags = resp;
-        },
-        error : e => {
-          console.log("~ e", e);
-        }
-      })
+  getTags(): Observable<Tag[]>{
+    return this.productService.getTags();
   }
 
   // Create and format the object for add in the form array
@@ -253,16 +241,19 @@ export class ProductDetailComponent implements OnInit {
 
   /** BRANDS */
 
-  getBrands(){
-    this.productService.getBrands()
-      .subscribe({
-        next: brands => {
-          this.brands = brands;
-        },
-        error : e => {
-          console.log("~ e", e);
+  getBrands(): Observable<Brand[]>{
+    return this.productService.getBrands();
+  }
+
+  getInitialData(){
+    forkJoin({
+        brands: this.getBrands().pipe(catchError(() => of([]))),
+        tags  : this.getTags().pipe(catchError(() => of([])))
+    }).subscribe( resp => {
+            this.brands = resp.brands;
+            this.tags   = resp.tags;
         }
-      })
+    )
   }
 
 
