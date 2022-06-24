@@ -65,13 +65,27 @@ export class ProductService {
 
   /** Tags */
   getTags():Observable<Tag[]>{
-    return this.http.get<Tag[]>(`${this._baseURL}/products/tags`);
+    return this.http.get<Tag[]>(`${this._baseURL}/products/tags`)
+    .pipe(
+        catchError( err => {
+          console.log("Ha ocurrido un error al tratar de cargar las tags");
+          return throwError(() => err);
+        })
+      )
+    ;
   }
 
 
   /** Brands */
   getBrands():Observable<Brand[]>{
-    return this.http.get<Brand[]>(`${this._baseURL}/products/brands`);
+    return this.http.get<Brand[]>(`${this._baseURL}/products/brands`)
+        .pipe(
+          catchError( err => {
+            console.log("Ha ocurrido un error al tratar de cargar las marcas");
+            return throwError(() => err);
+          })
+        )
+    ;
   }
 
 
