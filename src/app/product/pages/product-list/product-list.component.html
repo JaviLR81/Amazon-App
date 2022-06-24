@@ -23,7 +23,7 @@
 
           <span
             class="form-text text-danger"
-            [errorMessage]="!hasValidationErrors('name')"
+            [errorMessage]="!hasValidationErrors(productForm, 'name')"
             message ="Este es un mensaje personalizado"
           >
           </span>
@@ -41,7 +41,7 @@
           >
 
           <span class="form-text text-danger"
-            *ngIf="hasValidationErrors('price')">
+            *ngIf="hasValidationErrors(productForm, 'price')">
               El campo no es válido
           </span>
 
@@ -58,7 +58,7 @@
           >
 
           <span class="form-text text-danger"
-            *ngIf="hasValidationErrors('description')">
+            *ngIf="hasValidationErrors(productForm, 'description')">
               El campo no es válido
           </span>
 
@@ -78,7 +78,7 @@
           </ng-select>
 
           <span class="form-text text-danger"
-            *ngIf="hasValidationErrors('brand.id')">
+            *ngIf="hasValidationErrors(productForm, 'brand.id')">
               La marca es requerida
           </span>
 

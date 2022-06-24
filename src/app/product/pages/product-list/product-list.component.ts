@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params } from '@angular/router';
 
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { switchMap } from 'rxjs';
+import { catchError, forkJoin, map, of, switchMap, throwError } from 'rxjs';
 import Swal from 'sweetalert2';
 
 
 import { ProductService } from '../../services/product/product.service';
 import { Brand, Product } from 'src/app/shared/interfaces/product.interface';
+import { FormValidatorService } from 'src/app/shared/services/form-validator.service';
 
 @Component({
   selector: 'app-product-list',
@@ -26,65 +27,39 @@ export class ProductListComponent implements OnInit {
     name: ['',Validators.required],
     description: ['',Validators.required],
     price: ['',[Validators.required,Validators.min(1)]],
-    image: ['no-image.png',Validators.required],
     brand: this.fb.group({
       id: [null, Validators.required],
     })
   });
 
   constructor(
-    private activatedRoute:ActivatedRoute,
-    private productService:ProductService,
-    private fb:FormBuilder,
-    private ngBModal:NgbModal
+    private activatedRoute       : ActivatedRoute,
+    private fb                   : FormBuilder,
+    private formValidatorService : FormValidatorService,
+    private productService       : ProductService,
+    private ngBModal             : NgbModal
   ) { }
 
   ngOnInit(): void {
 
     this.activatedRoute.params
       .pipe(
-        switchMap( params => {
-
-          let searchTerm:string = params['searchTerm'];
-
-          if(searchTerm){
-            // Do a search with specific parameter
-            return this.productService.getProducts();
-          }else{
-            // Do a general products search
-            return this.productService.getProducts();
-          }
-        })
+        map<Params, string>(params => params['searchTerm']),
+        switchMap( params =>  this.productService.getProducts())
       )
       .subscribe({
-        next: resp => {
-          this.products = resp;
-        },
+        next: resp => this.products = resp,
         error : e => {
-          console.log("Ha ocurrido un error al tratar de cargar los productos");
+          console.log("Ha ocurrido un error al tratar de cargar los productos", e.message);
         }
       });
 
-      // TODO: Look for optimization
-      this.productService.getBrands()
-        .subscribe({
-          next: resp => {
-            this.brands = resp;
-          },
-          error : e => {
-            console.log('Ha ocurrido un error al tratar de cargar las marcas');
-          }
-        })
+      this.getInitialData();
   }
 
-  hasValidationErrors(field: string): boolean{
-
-    let hasErrors  = (this.productForm.get(field)?.errors === null)  ? false :true;
-    let wasTouched = (this.productForm.get(field)?.touched) ? true : false;
-
-    return hasErrors && wasTouched;
+  hasValidationErrors(formGroup: FormGroup, field: string): boolean{
+    return this.formValidatorService.hasValidationErrors(formGroup, field);
   }
-
 
   saveProduct(){
 
@@ -104,7 +79,6 @@ export class ProductListComponent implements OnInit {
           console.log("Ha ocurrido un error al tratar de guardar el producto");
         }
       })
-
   }
 
   openModal(content:any){
@@ -114,9 +88,21 @@ export class ProductListComponent implements OnInit {
       name: '',
       description: '',
       price: '',
-      image: 'no-image.png',
       brand_id: null
     })
+  }
+
+  getBrands(){
+    return this.productService.getBrands();
+  }
+
+  getInitialData(){
+    forkJoin({
+        brands: this.getBrands().pipe(catchError(() => of([]))),
+    }).subscribe( resp => {
+            this.brands = resp.brands;
+        }
+    )
   }
 
 }

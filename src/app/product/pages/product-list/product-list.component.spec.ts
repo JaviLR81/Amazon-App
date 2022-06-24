@@ -12,6 +12,7 @@ import { ProductListComponent } from './product-list.component';
 
 import { Product } from 'src/app/shared/interfaces/product.interface';
 import { brandMock, brandsMock } from 'src/app/testing/product-mock';
+import { formControlHasErrors, setFormControlValue } from 'src/app/testing/functions/form-validator';
 
 
 class FakeActivatedRoute {
@@ -150,24 +151,11 @@ describe('ProductListComponent', () => {
     expect(spy).toHaveBeenCalledWith('Ha ocurrido un error al tratar de guardar el producto');
   });
 
-
-  // TODO: Isolate this functions in a place that allows to share beetwen multiple tests
-
-  function formControlHasErrors(formControl: AbstractControl): boolean{
-    return (formControl.errors === null) ? false : true;
-  }
-
   function setFormFieldValues(productForm: FormGroup): void {
     productForm.get('name')?.setValue('Apple TV');
     productForm.get('description')?.setValue('Apple TV, the most recent TV in the market');
     productForm.get('price')?.setValue(125);
     productForm.get('brand.id')?.setValue(brandMock.id);
-  }
-
-  function setFormControlValue(productForm: FormGroup, fieldName: string, value: any): AbstractControl | null{
-    let formControl = productForm.get(fieldName);
-    formControl?.setValue(value);
-    return formControl;
   }
 
 });
