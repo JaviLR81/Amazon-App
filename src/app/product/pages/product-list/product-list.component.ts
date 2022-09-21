@@ -68,7 +68,7 @@ export class ProductListComponent implements OnInit {
   }
 
   ngOnDestroy(){
-    this.userSubs.unsubscribe();
+    this.userSubs?.unsubscribe();
     this.store.dispatch( actions.isLookingProducts({isLookingProducts: false}) );
   }
 
