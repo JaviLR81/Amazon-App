@@ -1,16 +1,17 @@
 import { createReducer, on } from '@ngrx/store';
-import { Product } from 'src/app/shared/interfaces/product.interface';
-import { product } from 'src/app/testing/product-mock';
+import { Product } from '../../shared/interfaces/product.interface';
 import * as actions from '../actions';
 
 export interface UserState {
     isLookingProducts: boolean;
-    product: Product
+    product          : Product;
+    searchBar        : string;
 }
 
 export const userInitialState: UserState = {
    isLookingProducts: false,
-   product: null as any
+   product: null as any,
+   searchBar: null as any
 }
 
 export const userReducer = createReducer(userInitialState,
@@ -18,4 +19,5 @@ export const userReducer = createReducer(userInitialState,
     on(actions.loadProductById,     (state, {id})                => ({ ...state, product: {id: id} as any })),
     on(actions.loadProductByIdStore,(state, {product})           => ({ ...state, product: {...product}})),
     on(actions.clearProductStore,   (state)                      => ({ ...state, product: null as any})),
+    on(actions.setNewSearchBar,     (state, {search})            => ({ ...state, searchBar: search })),
 );

@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { debounceTime, Subject } from 'rxjs';
+import * as actions from '../../../store/actions';
 import { AppState } from 'src/app/store/app.reducers';
 
 @Component({
@@ -41,7 +42,7 @@ export class HeaderComponent implements OnInit {
         debounceTime(300)
       )
       .subscribe(valor => {
-        console.log("Emiti el evento onDebounce()");
+        this.store.dispatch(actions.setNewSearchBar({search: valor}));
       })
 
     this.store
