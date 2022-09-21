@@ -107,8 +107,9 @@
           </a>
           <div ngbDropdownMenu class="px-3" aria-labelledby="userAccount">
             <div class="d-flex flex-column justify-content-center">
-              <a href="#" class="btn btn-warning w-75 btn-sm font-weight-bold">Signin</a>
+              <a (click)="emitSubject()" class="btn btn-warning w-75 btn-sm font-weight-bold">Signin</a>
               <small>New customer?<a href="register.html"> Start here.</a></small>
+              <small>  {{ userLoggedSubject$ | async }} </small>
             </div>
           </div>
         </li>

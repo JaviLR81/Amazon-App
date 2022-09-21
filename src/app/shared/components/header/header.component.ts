@@ -2,8 +2,11 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { debounceTime, Subject } from 'rxjs';
+import { HeaderSubjectService } from '../../services/header-subject/header-subject.service';
+
 import * as actions from '../../../store/actions';
 import { AppState } from 'src/app/store/app.reducers';
+
 
 @Component({
   selector: 'app-header',
@@ -34,6 +37,7 @@ export class HeaderComponent implements OnInit {
   constructor(
     private router: Router,
     private store: Store<AppState>,
+    private headerSubjectService: HeaderSubjectService
   ) { }
 
   ngOnInit(): void {
@@ -50,7 +54,6 @@ export class HeaderComponent implements OnInit {
             this.placeholder = user.isLookingProducts ? 'Search any product from the list :D' : 'Search any product :D';
             this.totalCartItems = cart.cartItems.length;
       })
-
   }
 
   search(){
@@ -82,6 +85,14 @@ export class HeaderComponent implements OnInit {
   searchSuggestions(){
     // console.log("searchSuggestions",this.searchTerm);
     this.debouncer.next(this.searchTerm);
+  }
+
+  emitSubject(){
+    this.headerSubjectService.login("Javi");
+  }
+
+  get userLoggedSubject$(){
+    return this.headerSubjectService.userLoggedSubject$;
   }
 
 }
