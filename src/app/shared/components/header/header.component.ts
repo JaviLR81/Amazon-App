@@ -1,6 +1,13 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { debounceTime, Subject } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { from, Subject } from 'rxjs';
+import { debounceTime, map, mergeAll, mergeMap, pluck, reduce, tap } from 'rxjs/operators';
+import { HeaderSubjectService } from '../../services/header-subject/header-subject.service';
+
+import * as actions from '../../../store/actions';
+import { AppState } from 'src/app/store/app.reducers';
+
 
 @Component({
   selector: 'app-header',
@@ -17,6 +24,8 @@ export class HeaderComponent implements OnInit {
 
   searchTerm:string = '';
   placeholder:string = 'Search any product :D';
+  totalCartItems: number = 0;
+  totalPriceCartItems: number = 0;
 
   @Output() onEnter:EventEmitter<string> = new EventEmitter();
   debouncer: Subject<string> = new Subject();
@@ -27,16 +36,42 @@ export class HeaderComponent implements OnInit {
     return [...this._searchHistory];
   }
 
-  constructor(private router:Router) { }
+  constructor(
+    private router: Router,
+    private store: Store<AppState>,
+    private headerSubjectService: HeaderSubjectService
+  ) { }
 
   ngOnInit(): void {
     this.debouncer
       .pipe(
-        debounceTime(300)
+        debounceTime(300),
+        map(data => data.toLowerCase() )
       )
       .subscribe(valor => {
-        console.log("Emiti el evento onDebounce()");
+        this.store.dispatch(actions.setNewSearchBar({search: valor}));
       })
+
+    this.store
+      .subscribe( ({user, cart}) => {
+            this.placeholder = user.isLookingProducts ? 'Search any product from the list :D' : 'Search any product :D';
+            this.totalCartItems = cart.cartItems.length;
+      })
+
+    // TODO: Really not necessary just for educational purposes
+    this.store
+      .pipe(
+        pluck('cart','cartItems'),
+        mergeMap( data => from(data).pipe(
+          map(d => d.price),
+          reduce((acc, curr) => acc + curr))
+        ),
+        // mergeAll()
+      )
+      .subscribe( data => {
+          this.totalPriceCartItems = data;
+      })
+
   }
 
   search(){
@@ -59,7 +94,7 @@ export class HeaderComponent implements OnInit {
       }
 
 
-      this.router.navigate(['/product/list',this.searchTerm]);
+      this.router.navigate(['/product/list',standarSearch]);
       //this.onEnter.emit(this.searchTerm);
 
       this.searchTerm = '';
@@ -68,6 +103,14 @@ export class HeaderComponent implements OnInit {
   searchSuggestions(){
     // console.log("searchSuggestions",this.searchTerm);
     this.debouncer.next(this.searchTerm);
+  }
+
+  emitSubject(){
+    this.headerSubjectService.login("Javi");
+  }
+
+  get userLoggedSubject$(){
+    return this.headerSubjectService.userLoggedSubject$;
   }
 
 }

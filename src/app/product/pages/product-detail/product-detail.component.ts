@@ -1,29 +1,43 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { Store } from '@ngrx/store';
+
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { catchError, forkJoin, Observable, of, switchMap } from 'rxjs';
+import { catchError,
+        filter,
+        forkJoin,
+        Observable,
+        of,
+        Subscription
+} from 'rxjs';
 import Swal from 'sweetalert2';
 
+import { FormValidatorService } from '../../../shared/services/form-validator.service';
 import { ModalProductEditService } from '../../services/modal-product-edit/modal-product-edit.service';
-import { NameUniqueValidatorService } from 'src/app/shared/services/validators/name-unique-validator.service';
+import { NameUniqueValidatorService } from '../../../shared/services/validators/name-unique-validator.service';
 import { ProductService } from '../../services/product/product.service';
-import { ValidatorService } from 'src/app/shared/services/validators/validator.service';
-import { Brand, Product, Tag } from 'src/app/shared/interfaces/product.interface';
-import { FormValidatorService } from 'src/app/shared/services/form-validator.service';
+import { ValidatorService } from '../../../shared/services/validators/validator.service';
+
+import { AppState } from '../../../store/app.reducers';
+import * as actions from '../../../store/actions';
+
+import { Brand, Product, Tag } from '../../../shared/interfaces/product.interface';
+
 
 @Component({
   selector: 'app-product-detail',
   templateUrl: './product-detail.component.html',
   styleUrls: ['./product-detail.component.css']
 })
-export class ProductDetailComponent implements OnInit {
+export class ProductDetailComponent implements OnInit, OnDestroy {
 
   product   !: Product;
-  closeResult: string       = '';
+  closeResult: string = '';
   tags       : Tag[] = [];
   brands     : Brand[] = [];
+  userSubs  !: Subscription;
 
   /** MODALS */
 
@@ -64,30 +78,29 @@ export class ProductDetailComponent implements OnInit {
     private validatorService           : ValidatorService,
     private formValidatorService       : FormValidatorService,
     private ngbModal                   : NgbModal,
-    private fb                         : FormBuilder
+    private fb                         : FormBuilder,
+    private store                      : Store<AppState>
   ) { }
 
   ngOnInit(): void {
     this.activatedRoute.params
-      .pipe(
-        switchMap( params => {
-            let id:number = +params['id'];
-            return this.productService.getProductDetail(id)
-        })
-      )
-      .subscribe(
-        {
-          next: product => {
-            this.product = product;
-          },
-          error: () => {
-            console.log("Ha ocurrido un error");
-          }
+      .subscribe( params =>{
+          let id: number = +params['id'];
+          this.store.dispatch( actions.loadProductById({id: id}) );
         }
       );
 
-    // Tags
     this.getInitialData();
+
+    // Store Subscription
+    this.userSubs = this.store.select('user')
+                      .pipe(filter( user => user !== null ))
+                      .subscribe( ({product}) => this.product = product)
+  }
+
+  ngOnDestroy(){
+    this?.userSubs.unsubscribe();
+    this.store.dispatch( actions.clearProductStore() );
   }
 
 
@@ -254,6 +267,12 @@ export class ProductDetailComponent implements OnInit {
             this.tags   = resp.tags;
         }
     )
+  }
+
+  /** CART */
+
+  addToCart(){
+      this.store.dispatch( actions.setCartItem({cartItem: this.product}) );
   }
 
 

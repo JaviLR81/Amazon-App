@@ -2,15 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
 
+// NGRX
+import { AppState } from 'src/app/store/app.reducers';
+import { Store } from '@ngrx/store';
+
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { catchError, forkJoin, map, of, switchMap, throwError } from 'rxjs';
+import { catchError, forkJoin, map, of, Subscription, switchMap } from 'rxjs';
 import Swal from 'sweetalert2';
 
 
 import { ProductService } from '../../services/product/product.service';
 import { Brand, Product } from 'src/app/shared/interfaces/product.interface';
 import { FormValidatorService } from 'src/app/shared/services/form-validator.service';
+
+import * as actions from '../../../store/actions';
 
 @Component({
   selector: 'app-product-list',
@@ -20,6 +26,7 @@ import { FormValidatorService } from 'src/app/shared/services/form-validator.ser
 export class ProductListComponent implements OnInit {
 
 
+  userSubs!: Subscription;
   products: Product[] = [];
   brands  : Brand[]   = [];
 
@@ -37,7 +44,8 @@ export class ProductListComponent implements OnInit {
     private fb                   : FormBuilder,
     private formValidatorService : FormValidatorService,
     private productService       : ProductService,
-    private ngBModal             : NgbModal
+    private ngBModal             : NgbModal,
+    private store                : Store<AppState>
   ) { }
 
   ngOnInit(): void {
@@ -54,7 +62,14 @@ export class ProductListComponent implements OnInit {
         }
       });
 
-      this.getInitialData();
+    this.getInitialData();
+
+    this.store.dispatch( actions.isLookingProducts({isLookingProducts: true}) );
+  }
+
+  ngOnDestroy(){
+    this.userSubs?.unsubscribe();
+    this.store.dispatch( actions.isLookingProducts({isLookingProducts: false}) );
   }
 
   hasValidationErrors(formGroup: FormGroup, field: string): boolean{

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HeaderSubjectService } from '../../services/header-subject/header-subject.service';
 
 @Component({
   selector: 'app-footer',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FooterComponent implements OnInit {
 
-  constructor() { }
+  constructor(private headerSubjectService: HeaderSubjectService) { }
 
   ngOnInit(): void {
+  }
+
+  get userLoggedSubject$(){
+    return this.headerSubjectService.userLoggedSubject$;
   }
 
 }
