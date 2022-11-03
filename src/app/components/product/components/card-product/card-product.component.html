@@ -6,19 +6,19 @@
   <!-- Product image starts -->
   <div class="col-md-4 text-center">
 
-    <!-- <img src="img/product_images/product_list_image_01.svg" alt="product image 01"> -->
-
     <img
       *ngIf="product?.image"
       src="http://localhost:8080/api/uploads/img/{{ product.image }}"
       alt="{{ product.name }}"
       class="img-fluid"
+      (error)="onImgError($event)"
     >
     <img
       *ngIf="!product?.image"
       src="http://localhost:8080/images/no-image.png"
       alt="{{ product.name }}"
       class="img-fluid"
+      (error)="onImgError($event)"
     >
 
   </div> <!-- Product image ends -->

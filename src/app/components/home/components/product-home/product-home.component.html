@@ -1,0 +1,38 @@
+  <div class="card my-2 my-lg-0">
+    <div class="card-body d-flex justify-content-center">
+      <a href="#">
+        <img
+          *ngIf="product?.image"
+          src="http://localhost:8080/api/uploads/img/{{ product.image }}"
+          alt="{{ product.name }}"
+          class="img-fluid"
+          enlargeImageHover
+          height="70px"
+          (error)="onImgError($event)"
+        >
+        <img
+          *ngIf="!product?.image"
+          src="http://localhost:8080/images/no-image.png"
+          alt="{{ product.name }}"
+          class="img-fluid"
+          enlargeImageHover
+          (error)="onImgError($event)"
+        >
+      </a>
+    </div>
+    <div class="card-footer bg-transparent py-0">
+      <div class="row my-1">
+        <div class="col-md-6">
+          <p class="font-weight-bold text-danger">
+            <i class="fas fa-rupee-sign"></i> {{ product.price | currency }}
+          </p>
+          <p>
+            {{ product.name }} - {{ product.inventory | availability }}
+          </p>
+        </div>
+        <div class="col-md-6">
+          <a [appBlueButton]="'capitalize'" location="HomeComponent" [routerLink]="['/product',product.id]" class="btn btn-success btn-sm btn-block">Ver</a>
+        </div>
+      </div>
+    </div>
+  </div>

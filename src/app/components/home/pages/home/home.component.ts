@@ -10,13 +10,7 @@ import { products } from 'src/app/testing/product-mock';
 })
 export class HomeComponent implements OnInit {
 
-
-  // products:Product[] = [];
-
-  // Data for testing without server
-
   products:Product[] = [];
-
 
   constructor(private homeService:HomeService) { }
 

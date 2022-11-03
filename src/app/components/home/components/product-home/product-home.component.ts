@@ -1,19 +1,20 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
-import { Product } from 'src/app/shared/interfaces/product.interface';
+import { Product } from '../../../../shared/interfaces/product.interface';
 
 @Component({
-  selector: 'app-card-product',
-  templateUrl: './card-product.component.html',
-  styleUrls: ['./card-product.component.css'],
+  selector: 'app-product-home',
+  templateUrl: './product-home.component.html',
+  styleUrls: ['./product-home.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CardProductComponent implements OnInit {
+export class ProductHomeComponent implements OnInit {
 
-  @Input() product!:Product;
+  @Input() product!: Product;
 
   constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   onImgError(event: any){
     let url = (+new Date() % 2 === 0)
@@ -21,4 +22,6 @@ export class CardProductComponent implements OnInit {
       :  './assets/img/laptop.png';
     event.target.src = url;
   }
+
+
 }
