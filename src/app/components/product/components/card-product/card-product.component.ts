@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
 import { Product } from 'src/app/shared/interfaces/product.interface';
+import { ImgService } from 'src/app/shared/services/img.service';
 
 @Component({
   selector: 'app-card-product',
@@ -7,18 +8,18 @@ import { Product } from 'src/app/shared/interfaces/product.interface';
   styleUrls: ['./card-product.component.css'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class CardProductComponent implements OnInit {
+export class CardProductComponent {
 
   @Input() product!:Product;
+  urlImage: string = './assets/img/alexa.png';
 
-  constructor() { }
-
-  ngOnInit(): void {}
+  constructor(private imgSerice: ImgService) {
+    if(+new Date() % 2 === 0){
+      this.urlImage = './assets/img/laptop.png';
+    }
+  }
 
   onImgError(event: any){
-    let url = (+new Date() % 2 === 0)
-      ? './assets/img/alexa.png'
-      :  './assets/img/laptop.png';
-    event.target.src = url;
+    this.imgSerice.onImgError(event);
   }
 }

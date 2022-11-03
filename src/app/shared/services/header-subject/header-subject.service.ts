@@ -6,13 +6,14 @@ import { Subject } from 'rxjs';
 })
 export class HeaderSubjectService {
 
-  userLoggedSubject$: Subject<string> = new Subject();
+  private userLoggedSubject: Subject<string> = new Subject();
+  userLogged$ = this.userLoggedSubject.asObservable();
 
   constructor() { }
 
   login(name: string){
     let date = new Date();
-    this.userLoggedSubject$.next(name.concat("!").concat(date.getTime().toString()));
+    this.userLoggedSubject.next(name.concat("!").concat(date.getTime().toString()));
   }
 
 

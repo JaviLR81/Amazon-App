@@ -1,26 +1,14 @@
-
-
-
 <!-- Single product detail starts -->
 <div class="row border-top py-3">
   <!-- Product image starts -->
   <div class="col-md-4 text-center">
 
     <img
-      *ngIf="product?.image"
-      src="http://localhost:8080/api/uploads/img/{{ product.image }}"
+      [src]="urlImage"
       alt="{{ product.name }}"
       class="img-fluid"
       (error)="onImgError($event)"
     >
-    <img
-      *ngIf="!product?.image"
-      src="http://localhost:8080/images/no-image.png"
-      alt="{{ product.name }}"
-      class="img-fluid"
-      (error)="onImgError($event)"
-    >
-
   </div> <!-- Product image ends -->
 
   <!-- Product details starts -->
@@ -35,7 +23,7 @@
       <i class="far fa-star" style="color: #ffa41c;"></i>
     </p>
     <p class="text-uppercase my-0 font-weight-bold text-danger">
-      <i class="fas fa-rupee-sign" style="font-size: 10px;"></i> {{ product.price | currency }}
+      {{ product.price | currency }}
     </p>
   </div> <!-- Product details ends -->
 

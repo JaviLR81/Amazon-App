@@ -110,7 +110,7 @@ export class HeaderComponent implements OnInit {
   }
 
   get userLoggedSubject$(){
-    return this.headerSubjectService.userLoggedSubject$;
+    return this.headerSubjectService.userLogged$;
   }
 
 }

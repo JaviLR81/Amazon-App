@@ -14,7 +14,7 @@ export class FooterComponent implements OnInit {
   }
 
   get userLoggedSubject$(){
-    return this.headerSubjectService.userLoggedSubject$;
+    return this.headerSubjectService.userLogged$;
   }
 
 }
