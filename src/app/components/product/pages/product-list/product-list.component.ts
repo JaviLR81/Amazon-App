@@ -16,7 +16,7 @@ import { ProductService } from '../../services/product/product.service';
 import { Brand, Product } from 'src/app/shared/interfaces/product.interface';
 import { FormValidatorService } from 'src/app/shared/services/form-validator.service';
 
-import * as actions from '../../../store/actions';
+import * as actions from '../../../../store/actions';
 
 @Component({
   selector: 'app-product-list',

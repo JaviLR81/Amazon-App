@@ -14,16 +14,16 @@ import { catchError,
 } from 'rxjs';
 import Swal from 'sweetalert2';
 
-import { FormValidatorService } from '../../../shared/services/form-validator.service';
+import { FormValidatorService } from '../../../../shared/services/form-validator.service';
 import { ModalProductEditService } from '../../services/modal-product-edit/modal-product-edit.service';
-import { NameUniqueValidatorService } from '../../../shared/services/validators/name-unique-validator.service';
+import { NameUniqueValidatorService } from '../../../../shared/services/validators/name-unique-validator.service';
 import { ProductService } from '../../services/product/product.service';
-import { ValidatorService } from '../../../shared/services/validators/validator.service';
+import { ValidatorService } from '../../../../shared/services/validators/validator.service';
 
-import { AppState } from '../../../store/app.reducers';
-import * as actions from '../../../store/actions';
+import { AppState } from '../../../../store/app.reducers';
+import * as actions from '../../../../store/actions';
 
-import { Brand, Product, Tag } from '../../../shared/interfaces/product.interface';
+import { Brand, Product, Tag } from '../../../../shared/interfaces/product.interface';
 
 
 @Component({

@@ -3,7 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import * as actions from '../actions';
 import { tap, mergeMap, map, catchError } from 'rxjs/operators';
 import { of, throwError } from 'rxjs';
-import { ProductService } from 'src/app/product/services/product/product.service';
+import { ProductService } from '../../components/product/services/product/product.service';
 
 
 
